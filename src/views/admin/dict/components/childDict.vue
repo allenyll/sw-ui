@@ -38,7 +38,7 @@
         <el-table v-loading.body="listLoading" :key="tableKey" :data="list" :default-sort = "{prop: 'code', order: 'ascending'}" border fit highlight-current-row style="width: 100%">
           <el-table-column v-if="show" align="center" label="ID" width="0">
             <template slot-scope="scope">
-              <span>{{ scope.row.pkDictId }}</span>
+              <span>{{ scope.row.id }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="名称">
@@ -110,7 +110,7 @@
 </template>
 
 <script>
-import { getObj, delObj, putObj, getParent, getChild } from '@/api/admin/dict/index';
+import { getObj, delObj, putObj, getParent, getChild } from '@/api/admin/dict/index'
 export default {
   name: 'ChildDict',
   filters: {
@@ -186,7 +186,7 @@ export default {
           for (var i = 0; i < dataList.length; i++) {
             var dict = {
               label: dataList[i].name,
-              value: dataList[i].pkDictId
+              value: dataList[i].id
             }
             this.options.push(dict)
           }
@@ -216,7 +216,7 @@ export default {
       const set = this.$refs
       set[formName].validate(valid => {
         if (valid) {
-          putObj(this.form.pkDictId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.$notify({
               title: '成功',
               message: '更新成功',
@@ -234,7 +234,7 @@ export default {
       set[formName].validate(valid => {
         if (valid) {
           this.dialogFormVisible = false
-          putObj(this.form.pkDictId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getChildList(this.dictId)
             this.$notify({
@@ -250,7 +250,7 @@ export default {
       })
     },
     handleUpdateChild(row) {
-      getObj(row.pkDictId)
+      getObj(row.id)
         .then(response => {
           this.form = response.data.obj
           this.dialogFormVisible = true
@@ -264,7 +264,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delObj(row.pkDictId)
+          delObj(row.id)
             .then(() => {
               this.$notify({
                 title: '成功',

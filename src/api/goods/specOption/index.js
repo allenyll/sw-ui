@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-product/specOption/'
+const path = '/api-web/specOption/'
 
 export function getSpecOptionList() {
   return request({
@@ -37,7 +37,7 @@ export function delObj(id, obj) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_spec_option_id: id
+      eq_id: id
     }
   })
 }

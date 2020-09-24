@@ -43,7 +43,7 @@ export function delObj(id, obj) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_menu_id: id
+      eq_id: id
     }
   })
 }

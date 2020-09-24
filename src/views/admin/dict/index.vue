@@ -1,11 +1,35 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.like_name" style="width: 200px;" class="filter-item" placeholder="名称" @keyup.enter.native="handleFilter"/>
-      <el-input v-model="listQuery.eq_code" style="width: 200px;" class="filter-item" placeholder="编码" @keyup.enter.native="handleFilter"/>
-      <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="dictManager_btn_add" class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-plus" @click="handleCreate">添加</el-button>
-    </div>
+    <el-card class="search-container" shadow="never">
+      <div style="height: 32px; margin-bottom: 5px;">
+        <i class="el-icon-search"/>
+        <span>筛选搜索</span>
+        <el-button style="float:right" type="primary" size="small" @click="handleFilter()">查询搜索</el-button>
+        <el-button style="float:right;margin-right: 15px" size="small" @click="handleReset()">重置</el-button>
+      </div>
+      <div>
+        <el-form :inline="true" :model="listQuery" size="small">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="字典名称：">
+                <el-input v-model="listQuery.like_name" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="字典编码：">
+                <el-input v-model="listQuery.eq_code" class="input-width" placeholder="手工录入，精确查询"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 10px; margin-bottom: 10px;"/>
+      <span>数据列表</span>
+      <el-button v-if="dictManager_btn_add" class="filter-item" style="float:right;" type="primary" @click="handleCreate">添加</el-button>
+    </el-card>
+
     <el-table
       v-loading.body="listLoading"
       :key="tableKey"
@@ -17,7 +41,7 @@
       style="width: 100%">
       <el-table-column v-if="show" align="center" label="ID">
         <template slot-scope="scope">
-          <span>{{ scope.row.pkDictId }}</span>
+          <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="名称">
@@ -48,7 +72,7 @@
       <el-table-column align="center" label="操作" width="300"> <template slot-scope="scope">
         <el-button size="small" type="info" icon="el-icon-plus" @click="handleAddChild(scope.row)">添加子项
         </el-button>
-        <router-link :to="{ path:'/sys/dict/edit',query: {id:scope.row.pkDictId} }">
+        <router-link :to="{ path:'/sys/dict/edit',query: {id:scope.row.id} }">
           <el-button v-if="dictManager_btn_edit" type="success" size="small" icon="el-icon-edit">编辑</el-button>
         </router-link>
         <el-button v-if="dictManager_btn_del" size="small" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除
@@ -206,7 +230,7 @@ export default {
           for (var i = 0; i < dataList.length; i++) {
             var dict = {
               label: dataList[i].name,
-              value: dataList[i].pkDictId
+              value: dataList[i].id
             }
             this.options.push(dict)
           }
@@ -214,6 +238,16 @@ export default {
     },
     handleFilter() {
       this.getList(data => {})
+    },
+    handleReset() {
+      this.listQuery = {
+        page: 1,
+        limit: 10,
+        like_name: '',
+        eq_code: '',
+        eq_parent_id: '0',
+        order_code: true
+      }
     },
     handleSizeChange(val) {
       this.listQuery.limit = val
@@ -229,10 +263,10 @@ export default {
       this.dialogFormVisible = true
     },
     handleAddChild(row) {
-      getObj(row.pkDictId)
+      getObj(row.id)
         .then(response => {
           this.dialogFormVisible = true
-          this.form.parentId = response.data.obj.pkDictId
+          this.form.parentId = response.data.obj.id
           this.dialogStatus = 'create'
         })
     },
@@ -243,7 +277,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delObj(row.pkDictId)
+          delObj(row.id)
             .then(() => {
               this.$notify({
                 title: '成功',
@@ -286,7 +320,7 @@ export default {
       set[formName].validate(valid => {
         if (valid) {
           this.dialogFormVisible = false
-          putObj(this.form.pkDictId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getList(data => {})
             this.$notify({

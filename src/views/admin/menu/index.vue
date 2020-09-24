@@ -33,25 +33,25 @@
             <el-form-item label="菜单id" prop="id" hidden="true">
               <el-input v-model="form.id"/>
             </el-form-item>
+            <el-form-item label="菜单名称" prop="menuName">
+              <el-input v-model="form.menuName" :disabled="formEdit" placeholder="请输入名称"/>
+            </el-form-item>
             <el-form-item label="菜单编码" prop="menuCode">
               <el-input v-model="form.menuCode" :disabled="formEdit" placeholder="请输入菜单编码"/>
             </el-form-item>
-            <el-form-item label="名称" prop="menuName">
-              <el-input v-model="form.menuName" :disabled="formEdit" placeholder="请输入名称"/>
-            </el-form-item>
             <el-form-item label="父级节点" prop="parentMenuName">
-              <el-col :span="20">
+              <el-col :span="19">
                 <el-input v-model="form.parentMenuName" :disabled="true" placeholder="请输入父级节点" @click="dialogTableVisible = true"/>
               </el-col>
               <el-button :disabled="formEdit" style="margin-left:10px;" type="primary" icon="el-icon-menu" @click="dialogTableVisible = true">菜单树</el-button>
             </el-form-item>
-            <el-form-item label="父级节点" prop="parentMenuId" hidden="true">
-              <el-col :span="20">
-                <el-input v-model="form.parentMenuId" :disabled="formEdit" placeholder="请输入父级节点" @click="dialogTableVisible = true"/>
+            <el-form-item label="父级节点" prop="pid" hidden="true">
+              <el-col :span="19">
+                <el-input v-model="form.pid" :disabled="formEdit" placeholder="请输入父级节点" @click="dialogTableVisible = true"/>
               </el-col>
             </el-form-item>
             <el-form-item label="图标" prop="menuIcon">
-              <el-col :span="20">
+              <el-col :span="19">
                 <el-input v-model="form.menuIcon" :disabled="true" placeholder="请输入图标"/>
               </el-col>
               <el-button :disabled="formEdit" style="margin-left:10px;" type="primary" icon="el-icon-menu" @click="openIcon">图标表</el-button>
@@ -163,7 +163,7 @@ export default {
       form: {
         menuCode: undefined,
         menuName: undefined,
-        parentMenuId: undefined,
+        pid: undefined,
         parentMenuName: undefined,
         menuUrl: undefined,
         menuIcon: undefined,
@@ -249,7 +249,7 @@ export default {
         })
         return
       }
-      this.form.parentMenuId = keyArr[0]
+      this.form.pid = keyArr[0]
       getObj(keyArr[0]).then(response => {
         this.form.parentMenuName = response.data.obj.menuName
       })
@@ -359,7 +359,7 @@ export default {
       this.form = {
         menuCode: undefined,
         menuName: undefined,
-        parentMenuId: undefined,
+        pid: undefined,
         parentMenuName: undefined,
         menuUrl: undefined,
         menuIcon: undefined,

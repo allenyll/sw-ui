@@ -1,17 +1,21 @@
 <template>
   <div class="app-container calendar-list-container">
-    <el-card class="filter-container" shadow="never">
-      <div>
+    <el-card class="search-container" shadow="never">
+      <div style="height: 32px; margin-bottom: 5px;">
         <i class="el-icon-search"/>
         <span>筛选搜索</span>
         <el-button style="float:right" type="primary" size="small" @click="handleFilter()">查询搜索</el-button>
         <el-button style="float:right;margin-right: 15px" size="small" @click="handleReset()">重置</el-button>
       </div>
-      <div style="margin-top: 30px">
-        <el-form :inline="true" :model="listQuery" size="small" label-width="100px">
-          <el-form-item label="名称：">
-            <el-input v-model="listQuery.like_role_name" class="input-width" placeholder="名称"/>
-          </el-form-item>
+      <div>
+        <el-form :inline="true" :model="listQuery" size="small">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="角色名称：">
+                <el-input v-model="listQuery.like_role_name" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
     </el-card>

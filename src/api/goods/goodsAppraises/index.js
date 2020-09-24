@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-product/goodsAppraises/'
+const path = '/api-web/goodsAppraises/'
 
 export function list() {
   return request({
@@ -37,7 +37,7 @@ export function delObj(id, obj) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_appraise_id: id
+      eq_id: id
     }
   })
 }

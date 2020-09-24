@@ -87,5 +87,261 @@ export const asyncRouterMap = [
       name: '角色管理',
       meta: { title: '角色管理', icon: 'sw-role', perms: 'sys:role:role', noCache: true }
     }]
+  },
+  {
+    path: '/sys/dict',
+    // component: () => import('@/views/admin/dict/index'),
+    component: Layout,
+    name: '字典管理',
+    meta: { title: '字典管理', icon: 'sw-dict', perms: 'sys:dict:dict', noCache: true },
+    children: [
+      {
+        path: 'list',
+        component: () => import('@/views/admin/dict/index'),
+        name: '字典列表',
+        meta: { title: '字典列表', icon: 'sw-dict', perms: 'sys:dict:list', noCache: true }
+      },
+      {
+        path: 'edit',
+        component: () => import('@/views/admin/dict/components/childDict'),
+        name: '编辑字典',
+        meta: { title: '编辑字典', noCache: true, perms: 'sys:dict:edit' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/monitor',
+    component: Layout,
+    name: '系统工具',
+    meta: { title: '系统工具', icon: 'sw-tools', perms: 'monitor:monitor' },
+    icon: 'setting',
+    children: [
+      {
+        path: 'log',
+        component: () => import('@/views/monitor/log/index'),
+        name: '系统日志',
+        meta: { title: '系统日志', icon: 'sw-log', perms: 'sys:log:log', noCache: true }
+      },
+      {
+        path: 'swagger',
+        // redirect: 'https://localhost:8082/swagger-ui.html',
+        component: Layout,
+        name: '接口文档',
+        children: [
+          {
+            path: 'http://localhost:10001/swagger-ui.html',
+            meta: { title: '接口文档', icon: 'sw-interface' }
+          }
+        ]
+        //  meta: { title: '接口文档', icon: 'sw-interface', perms: 'monitor:swagger:swagger', noCache: true }
+      },
+      {
+        path: 'generator',
+        component: () => import('@/views/monitor/generator/index'),
+        name: '代码工具',
+        meta: { title: '代码工具', icon: 'sw-code', perms: 'sys:generator:generator', noCache: true }
+      },
+      {
+        path: 'cache',
+        component: () => import('@/views/monitor/cache/index'),
+        name: '缓存管理',
+        meta: { title: '缓存管理', icon: 'sw-cache', perms: 'sys:cache:cache', noCache: true }
+      },
+      {
+        path: 'job',
+        component: () => import('@/views/admin/job/index'),
+        name: '调度任务',
+        meta: { title: '调度任务', icon: 'sw-job', perms: 'sys:job:list', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/customer',
+    component: Layout,
+    name: '会员管理',
+    meta: { title: '会员管理', icon: 'sw-customer', perms: 'customer:customer' },
+    icon: 'setting',
+    children: [
+      {
+        path: 'customer',
+        component: () => import('@/views/customer/customer/index'),
+        name: '会员管理',
+        meta: { title: '会员管理', icon: 'sw-role', perms: 'customer:customer:list', noCache: true }
+      },
+      {
+        path: 'customerPoint',
+        component: () => import('@/views/customer/customerPoint/index'),
+        name: '积分管理',
+        meta: { title: '积分管理', icon: 'sw-point', perms: 'customer:point:list', noCache: true }
+      },
+      {
+        path: 'customerPointDetail',
+        component: () => import('@/views/customer/customerPointDetail/index'),
+        name: '积分详情',
+        meta: { title: '积分详情', noCache: true, perms: 'customer:customerPointDetail:list' },
+        hidden: true
+      },
+      {
+        path: 'balance',
+        component: () => import('@/views/customer/balance/index'),
+        name: '余额管理',
+        meta: { title: '余额管理', icon: 'sw-balance', perms: 'customer:balance:list', noCache: true }
+      },
+      {
+        path: 'customerLevel',
+        component: () => import('@/views/customer/customerLevel/index'),
+        name: '会员等级',
+        meta: { title: '会员等级', icon: 'sw-level', perms: 'customer:customerLevel:list', noCache: true }
+      }
+    ]
+  },
+  {
+    path: '/goods',
+    component: Layout,
+    name: '商品管理',
+    meta: { title: '商品管理', icon: 'sw-goods', perms: 'goods:goods' },
+    icon: 'setting',
+    children: [
+      {
+        path: 'brand',
+        component: () => import('@/views/goods/brand/index'),
+        name: '品牌管理',
+        meta: { title: '品牌管理', icon: 'sw-brand', noCache: true, perms: 'goods:brand:list' }
+      },
+      {
+        path: 'specsGroup',
+        component: () => import('@/views/goods/specsGroup/index'),
+        name: '规格组',
+        meta: { title: '规格组', icon: 'sw-group', noCache: true, perms: 'goods:specsGroup:list' }
+      },
+      {
+        path: 'specs',
+        component: () => import('@/views/goods/specs/index'),
+        name: '规格管理',
+        meta: { title: '规格管理', icon: 'sw-spec', noCache: true, perms: 'goods:specs:list' }
+      },
+      {
+        path: 'specOption',
+        component: () => import('@/views/goods/specOption/index'),
+        name: '规格选项',
+        meta: { title: '规格选项', icon: 'sw-spec', noCache: true, perms: 'goods:specOption:list' }
+      },
+      {
+        path: 'category',
+        component: () => import('@/views/goods/category/index'),
+        name: '商品分类',
+        meta: { title: '商品分类', icon: 'sw-class', perms: 'goods:category:list', noCache: true }
+      },
+      {
+        path: 'goods',
+        component: () => import('@/views/goods/goods/index'),
+        name: '商品列表',
+        meta: { title: '商品列表', icon: 'sw-goods', perms: 'goods:goods:list', noCache: true }
+      },
+      {
+        path: 'addGoods',
+        component: () => import('@/views/goods/goods/addGoods'),
+        name: '添加商品',
+        meta: { title: '添加商品', icon: 'sw-add', perms: 'goods:goods:addGoods', noCache: true }
+      },
+      {
+        path: 'updateGoods',
+        name: 'updateGoods',
+        component: () => import('@/views/goods/goods/updateGoods'),
+        meta: { title: '修改商品', icon: 'sw-wdit' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/order',
+    component: Layout,
+    name: '订单管理',
+    meta: { title: '订单管理', icon: 'sw-order', perms: 'order:order' },
+    icon: 'setting',
+    children: [
+      {
+        path: 'coupon',
+        component: () => import('@/views/order/order/index'),
+        name: '订单列表',
+        meta: { title: '订单列表', icon: 'sw-order', noCache: true, perms: 'order:order:list' }
+      },
+      {
+        path: 'deliverOrderList',
+        name: 'deliverOrderList',
+        component: () => import('@/views/order/order/deliverOrderList'),
+        meta: { title: '发货列表' },
+        hidden: true
+      },
+      {
+        path: 'orderDetail',
+        name: 'orderDetail',
+        component: () => import('@/views/order/order/orderDetail'),
+        meta: { title: '订单详情' },
+        hidden: true
+      }
+    ]
+  },
+  {
+    path: '/market',
+    component: Layout,
+    name: '营销管理',
+    meta: { title: '营销管理', icon: 'sw-market', perms: 'market:market' },
+    icon: 'setting',
+    children: [
+      {
+        path: 'coupon',
+        component: () => import('@/views/market/coupon/index'),
+        name: '优惠券管理',
+        meta: { title: '优惠券管理', icon: 'sw-coupon', noCache: true, perms: 'market:coupon:list' }
+      },
+      {
+        path: 'couponDetail',
+        name: 'couponDetail',
+        component: () => import('@/views/market/coupon/detail'),
+        meta: { title: '优惠券领取详情' },
+        hidden: true
+      },
+      {
+        path: 'adPosition',
+        component: () => import('@/views/market/adPosition/index'),
+        name: '广告位管理',
+        meta: { title: '广告位管理', icon: 'sw-ad', noCache: true, perms: 'market:adPosition:list' }
+      },
+      {
+        path: 'ad',
+        component: () => import('@/views/market/ad/index'),
+        name: '广告管理',
+        meta: { title: '广告管理', icon: 'sw-ad', noCache: true, perms: 'market:ad:list' }
+      },
+      {
+        path: 'message',
+        component: () => import('@/views/market/message/index'),
+        name: '消息管理',
+        meta: { title: '消息管理', icon: 'sw-message', noCache: true, perms: 'market:message:list' }
+      }
+    ]
+  },
+  {
+    path: '/shop',
+    component: Layout,
+    name: '商城管理',
+    meta: { title: '商城管理', icon: 'sw-store', perms: 'shop:shop' },
+    icon: 'setting',
+    children: [
+      {
+        path: 'keywords',
+        component: () => import('@/views/shop/keywords/index'),
+        name: '关键字管理',
+        meta: { title: '关键字管理', icon: 'sw-word', noCache: true, perms: 'shop:keyword:list' }
+      },
+      {
+        path: 'searchHistory',
+        name: '搜索历史',
+        component: () => import('@/views/shop/searchHistory/index'),
+        meta: { title: '搜索历史', icon: 'sw-check', noCache: true, perms: 'shop:searchHistory:list' }
+      }
+    ]
   }
 ]

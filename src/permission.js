@@ -5,7 +5,6 @@ import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css'// progress bar style
 import { getToken } from '@/utils/auth' // getToken from cookie
 // 引入封装好的jsonp
-import { jsonp } from '@/utils/jsonp'
 import { getAuthUrl } from '@/utils/common'
 
 NProgress.configure({ showSpinner: false })// NProgress Configuration

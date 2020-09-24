@@ -37,7 +37,7 @@ export function delObj(id) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_user_id: id
+      eq_id: id
     }
   })
 }

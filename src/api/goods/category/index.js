@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-product/category/'
+const path = '/api-web/category/'
 
 export function tree(query) {
   return request({
@@ -52,7 +52,7 @@ export function delObj(id, obj) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_category_id: id
+      eq_id: id
     }
   })
 }

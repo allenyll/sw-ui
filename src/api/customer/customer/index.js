@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-member/customer/'
+const path = '/api-web/customer/'
 
 export function page(query) {
   return request({

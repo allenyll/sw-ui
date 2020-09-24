@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-user/log/'
+const path = '/api-system/log/'
 
 export function page(query) {
   return request({

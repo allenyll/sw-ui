@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-market/message/'
+const path = '/api-web/message/'
 
 export function list() {
   return request({
@@ -37,7 +37,7 @@ export function delObj(id, obj) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_message_id: id
+      eq_id: id
     }
   })
 }

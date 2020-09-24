@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-member/customerPoint/'
+const path = '/api-web/customerPoint/'
 
 export function page(query) {
   return request({
@@ -30,7 +30,7 @@ export function delObj(id, obj) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_point_id: id
+      eq_id: id
     }
   })
 }

@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
-const path = '/api-product/attributes/'
+const path = '/system-web/cart/'
 
-export function getAttrList() {
+export function list() {
   return request({
     url: path + 'list',
     method: 'post'
@@ -37,7 +37,7 @@ export function delObj(id, obj) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_attribute_id: id
+      eq_id: id
     }
   })
 }

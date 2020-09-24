@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-product/brand/'
+const path = '/api-web/brand/'
 
 export function getBrandList() {
   return request({
@@ -37,7 +37,7 @@ export function delObj(id, obj) {
     url: path + id,
     method: 'delete',
     params: {
-      eq_pk_brand_id: id
+      eq_id: id
     }
   })
 }

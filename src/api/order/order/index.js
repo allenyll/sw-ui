@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-order/order/'
+const path = '/api-web/order/'
 
 export function list() {
   return request({
@@ -57,7 +57,7 @@ export function deliveryOrder(params) {
 
 export function getOrderDetail(id) {
   return request({
-    url: '/api-order/orderDetail/getOrderDetail/' + id,
+    url: '/api-web/orderDetail/getOrderDetail/' + id,
     method: 'post'
   })
 }
