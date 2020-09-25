@@ -36,22 +36,15 @@
         </el-form>
       </div>
     </el-card>
-    <!--    <div class="filter-container">-->
-    <!--      <el-input v-model="listQuery.like_name" style="width: 200px;" class="filter-item" placeholder="名称" @keyup.enter.native="handleFilter"/>-->
-    <!--      <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>-->
-    <!--      <el-button v-if="couponManager_btn_add" class="filter-item" style="margin-left: 10px;" type="primary" icon="edit" @click="handleCreate">添加</el-button>-->
-    <!--    </div>-->
     <el-card class="operate-container" shadow="never">
-      <div>
-        <i class="el-icon-tickets"/>
-        <span>数据列表</span>
-        <el-button v-if="couponManager_btn_add" size="small" class="filter-item btn-add" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">添加</el-button>
-      </div>
+      <i class="el-icon-tickets" style="margin-top: 10px; margin-bottom: 10px;"/>
+      <span>数据列表</span>
+      <el-button v-if="couponManager_btn_add" class="filter-item" style="float:right;" type="primary" @click="handleCreate">添加</el-button>
     </el-card>
     <el-table v-loading.body="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column v-if="show" align="center" label="pk_coupon_id">
+      <el-table-column v-if="show" align="center" label="id">
         <template slot-scope="scope">
-          <span>{{ scope.row.pkCouponId }}</span>
+          <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="名称">
@@ -248,7 +241,7 @@
       <el-table v-loading.body="dialogListLoading" :key="dialogTableKey" :data="customerList" element-loading-text="拼命加载中" border fit highlight-current-row style="width: 100%">
         <el-table-column v-if="show" align="center" label="主键ID">
           <template slot-scope="scope">
-            <span>{{ scope.row.pkCustomerId }}</span>
+            <span>{{ scope.row.id }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="姓名">
@@ -536,7 +529,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        publishCoupon(this.tempCouponId, row.pkCustomerId).then(res => {
+        publishCoupon(this.tempCouponId, row.id).then(res => {
           if (res.code === '100000') {
             this.$message({
               message: '发放成功',
@@ -578,7 +571,7 @@ export default {
             this.selectGoodsOptions = []
             for (let i = 0; i < goodsList.length; i++) {
               const item = goodsList[i]
-              this.selectGoodsOptions.push({ goodsId: item.pkGoodsId, goodsName: item.goodsName, goodsCode: item.goodsCode })
+              this.selectGoodsOptions.push({ goodsId: item.id, goodsName: item.goodsName, goodsCode: item.goodsCode })
             }
           } else {
             this.selectGoodsOptions = []
@@ -626,7 +619,7 @@ export default {
     },
     handlePublish(index, row) {
       this.dialogCouponPublishVisible = true
-      this.tempCouponId = row.pkCouponId
+      this.tempCouponId = row.id
       console.log(this.tempCouponId)
     },
     handleReset() {
@@ -638,7 +631,7 @@ export default {
       }
     },
     handleDetail(index, row) {
-      this.$router.push({ path: '/market/couponDetail', query: { id: row.pkCouponId }})
+      this.$router.push({ path: '/market/couponDetail', query: { id: row.id }})
     },
     handleFilter() {
       this.getList(data => {})
@@ -668,7 +661,7 @@ export default {
       this.dialogFormVisible = true
     },
     handleUpdate(row) {
-      getObj(row.pkCouponId).then(response => {
+      getObj(row.id).then(response => {
         this.form = response.data.obj
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
@@ -680,7 +673,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(row.pkCouponId)
+        delObj(row.id)
           .then(() => {
             this.$notify({
               title: '成功',
@@ -723,7 +716,7 @@ export default {
         if (valid) {
           this.dialogFormVisible = false
           this.form.password = undefined
-          putObj(this.form.pkCouponId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getList(data => {})
             this.$notify({

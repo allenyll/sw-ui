@@ -74,3 +74,10 @@ export function updateGoods(id, param) {
     data: param
   })
 }
+
+export function getSnowFlakeId() {
+  return request({
+    url: path + 'getSnowFlakeId',
+    method: 'post'
+  })
+}

@@ -10,9 +10,25 @@
       <div>
         <el-form :inline="true" :model="listQuery" size="small">
           <el-row>
-            <el-col :span="4">
+            <el-col :span="6">
               <el-form-item label="名称：">
                 <el-input v-model="listQuery.like_name" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="规格值：">
+                <el-input v-model="listQuery.like_specs_val" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="规格组：">
+                <el-select v-model="listQuery.eq_specs_group_id" filterable placeholder="请选择规格组">
+                  <el-option
+                    v-for="item in specsGroupOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"/>
+                </el-select>
               </el-form-item>
             </el-col>
           </el-row>
@@ -25,7 +41,7 @@
       <el-button v-if="specsManager_btn_add" class="filter-item" style="float:right;" type="primary" @click="handleCreate">添加</el-button>
     </el-card>
     <el-table v-loading.body="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column v-if="show" align="center" label="pk_specs_id">
+      <el-table-column v-if="show" align="center" label="id">
         <template slot-scope="scope">
           <span>{{ scope.row.id }}</span>
         </template>
@@ -198,7 +214,9 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        name: undefined
+        like_name: undefined,
+        like_specs_val: undefined,
+        eq_specs_group_id: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -258,7 +276,9 @@ export default {
       this.listQuery = {
         page: 1,
         limit: 20,
-        like_name: undefined
+        like_name: undefined,
+        like_specs_val: undefined,
+        eq_specs_group_id: undefined
       }
     },
     handleSizeChange(val) {
@@ -305,6 +325,7 @@ export default {
       const set = this.$refs
       set[formName].validate(valid => {
         if (valid) {
+          this.form.categoryId = this.form.categoryId + ''
           addObj(this.form).then(() => {
             this.dialogFormVisible = false
             this.getList(data => {})
@@ -331,13 +352,14 @@ export default {
       set[formName].validate(valid => {
         if (valid) {
           this.dialogFormVisible = false
+          this.form.categoryId = this.form.categoryId + ''
           this.form.password = undefined
           putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getList(data => {})
             this.$notify({
               title: '成功',
-              message: '创建成功',
+              message: '更新成功',
               type: 'success',
               duration: 2000
             })

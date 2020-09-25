@@ -63,7 +63,7 @@ export default {
       const token = getToken()
       const self = this
       const config = {
-        header: {
+        headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': token,
           'login-type': 'sweb'
@@ -79,7 +79,7 @@ export default {
       formData.append('type', this.uploadType)
       formData.append('id', this.uploadId)
 
-      axios.post(baseUrl + '/api-file/file/upload', formData, config).then((res) => {
+      axios.post(baseUrl + '/api-web/file/upload', formData, config).then((res) => {
         // 做处理
         // this.getFileList(this.goodsId)
         if (res.data.code === '100000') {

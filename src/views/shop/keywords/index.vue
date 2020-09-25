@@ -1,14 +1,33 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.like_name" style="width: 200px;" class="filter-item" placeholder="名称" @keyup.enter.native="handleFilter"/>
-      <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="keywordsManager_btn_add" class="filter-item" style="margin-left: 10px;" type="primary" icon="edit" @click="handleCreate">添加</el-button>
-    </div>
+    <el-card class="search-container" shadow="never">
+      <div style="height: 32px; margin-bottom: 5px;">
+        <i class="el-icon-search"/>
+        <span>筛选搜索</span>
+        <el-button style="float:right" type="primary" size="small" @click="handleFilter()">查询搜索</el-button>
+        <el-button style="float:right;margin-right: 15px" size="small" @click="handleReset()">重置</el-button>
+      </div>
+      <div>
+        <el-form :inline="true" :model="listQuery" size="small">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="关键词：">
+                <el-input v-model="listQuery.like_keyword" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 10px; margin-bottom: 10px;"/>
+      <span>数据列表</span>
+      <el-button v-if="keywordsManager_btn_add" class="filter-item" style="float:right;" type="primary" @click="handleCreate">添加</el-button>
+    </el-card>
     <el-table v-loading.body="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column v-if="show" align="center" label="pk_keywords_id">
+      <el-table-column v-if="show" align="center" label="id">
         <template slot-scope="scope">
-          <span>{{ scope.row.pkKeywordsId }}</span>
+          <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="关键字">
@@ -189,7 +208,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        name: undefined
+        like_keyword: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -227,6 +246,14 @@ export default {
     handleFilter() {
       this.getList()
     },
+    handleReset() {
+      this.listQuery = {
+        page: 1,
+        limit: 20,
+        like_keyword: undefined,
+        like_code: undefined
+      }
+    },
     handleSizeChange(val) {
       this.listQuery.limit = val
       this.getList()
@@ -241,7 +268,7 @@ export default {
       this.dialogFormVisible = true
     },
     handleUpdate(row) {
-      getObj(row.pkKeywordsId).then(response => {
+      getObj(row.id).then(response => {
         this.form = response.data.obj
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
@@ -253,16 +280,25 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(row.pkKeywordsId)
-          .then(() => {
-            this.$notify({
-              title: '成功',
-              message: '删除成功',
-              type: 'success',
-              duration: 2000
-            })
-            const index = this.list.indexOf(row)
-            this.list.splice(index, 1)
+        delObj(row.id)
+          .then(res => {
+            if (res.code === '100000') {
+              this.dialogFormVisible = false
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '删除成功',
+                type: 'success',
+                duration: 2000
+              })
+              const index = this.list.indexOf(row)
+              this.list.splice(index, 1)
+            } else {
+              this.$message({
+                message: res.message,
+                type: 'error'
+              })
+            }
           })
       })
     },
@@ -270,15 +306,22 @@ export default {
       const set = this.$refs
       set[formName].validate(valid => {
         if (valid) {
-          addObj(this.form).then(() => {
-            this.dialogFormVisible = false
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
+          addObj(this.form).then(res => {
+            if (res.code === '100000') {
+              this.dialogFormVisible = false
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$message({
+                message: res.message,
+                type: 'error'
+              })
+            }
           })
         } else {
           return false
@@ -296,15 +339,22 @@ export default {
         if (valid) {
           this.dialogFormVisible = false
           this.form.password = undefined
-          putObj(this.form.pkKeywordsId, this.form).then(() => {
-            this.dialogFormVisible = false
-            this.getList()
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            })
+          putObj(this.form.id, this.form).then(res => {
+            if (res.code === '100000') {
+              this.dialogFormVisible = false
+              this.getList()
+              this.$notify({
+                title: '成功',
+                message: '更新成功',
+                type: 'success',
+                duration: 2000
+              })
+            } else {
+              this.$message({
+                message: res.message,
+                type: 'error'
+              })
+            }
           })
         } else {
           return false

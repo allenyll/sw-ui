@@ -31,16 +31,16 @@
 import GoodsInfo from './goodsInfo'
 import GoodsPromotion from './goodsPromotion'
 import GoodsAttr from './goodsAttr'
-import { getObj, createGoods, updateGoods } from '@/api/goods/goods/index'
+import { getObj, createGoods, updateGoods, getSnowFlakeId } from '@/api/goods/goods/index'
 
 const param = {
-  pkGoodsId: '',
-  fkBrandId: undefined,
-  fkCategoryId: undefined,
+  id: '',
+  brandId: undefined,
+  categoryId: undefined,
   parentCategoryId: undefined,
-  fkSpecCategoryId: undefined,
+  specCategoryId: undefined,
   parentSpecCategoryId: undefined,
-  fkUnitId: undefined,
+  unitId: undefined,
   goodsName: undefined,
   goodsCode: undefined,
   goodsBarCode: undefined,
@@ -84,7 +84,7 @@ const param = {
   goodsFullReduceList: [{ fullPrice: 0, reducePrice: 0, default: false }],
   // 商品阶梯价格
   goodsLadderList: [{ count: 0, discount: 0, price: 0, default: false }],
-  fkAttrCategoryId: undefined,
+  attrCategoryId: undefined,
   skuStockList: [],
   selectSkuPics: []
 }
@@ -111,15 +111,22 @@ export default {
   },
   created() {
     if (this.isEdit) {
-      this.goodsParam.pkGoodsId = this.$route.query.id
+      this.goodsParam.id = this.$route.query.id
       getObj(this.$route.query.id).then(response => {
         this.goodsParam = response.data.obj
       })
     } else {
-      this.goodsParam.pkGoodsId = this.uuid(32, 16)
+      this.getSnowFlakeId().then(id => {
+        this.goodsParam.id = id
+      })
     }
   },
   methods: {
+    getSnowFlakeId() {
+      return getSnowFlakeId().then(res => {
+        return res.data.id
+      })
+    },
     uuid(len, radix) {
       const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('')
       const uuid = []

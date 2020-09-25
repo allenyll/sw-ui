@@ -1,47 +1,77 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.like_name" style="width: 200px;" class="filter-item" placeholder="名称" @keyup.enter.native="handleFilter"/>
-      <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="adManager_btn_add" class="filter-item" style="margin-left: 10px;" type="primary" icon="edit" @click="handleCreate">添加</el-button>
-    </div>
+    <el-card class="search-container" shadow="never">
+      <div style="height: 32px; margin-bottom: 5px;">
+        <i class="el-icon-search"/>
+        <span>筛选搜索</span>
+        <el-button style="float:right" type="primary" size="small" @click="handleFilter()">查询搜索</el-button>
+        <el-button style="float:right;margin-right: 15px" size="small" @click="handleReset()">重置</el-button>
+      </div>
+      <div>
+        <el-form :inline="true" :model="listQuery" size="small">
+          <el-row>
+            <el-col :span="4">
+              <el-form-item label="名称：">
+                <el-input v-model="listQuery.like_name" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="广告位：">
+                <el-select v-model="listQuery.eq_ad_position_id" filterable placeholder="请选择" style="wdith:100%;">
+                  <el-option
+                    v-for="item in adPositionOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 10px; margin-bottom: 10px;"/>
+      <span>数据列表</span>
+      <el-button v-if="adManager_btn_add" class="filter-item" style="float:right;" type="primary" @click="handleCreate">添加</el-button>
+    </el-card>
     <el-table v-loading.body="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column v-if="show" align="center" label="pk_ad_id">
+      <el-table-column v-if="show" align="center" label="id">
         <template slot-scope="scope">
-          <span>{{ scope.row.pkAdId }}</span>
+          <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="200px" label="广告位">
+      <el-table-column align="center" label="广告位">
         <template slot-scope="scope">
-          <span>{{ adPositionNameMap[scope.row.fkAdPositionId] }}</span>
+          <span>{{ adPositionNameMap[scope.row.adPositionId] }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="200px" label="广告名称">
+      <el-table-column align="center" label="广告名称">
         <template slot-scope="scope">
           <span>{{ scope.row.adName }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="100px" label="广告类型">
+      <el-table-column align="center" label="广告类型">
         <template slot-scope="scope">
           <span>{{ scope.row.adType | adTypeFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="200px" label="图片地址">
+      <el-table-column align="center" label="图片地址">
         <template slot-scope="scope">
           <img :src="scope.row.imageUrl" min-width="120" height="80" >
         </template>
       </el-table-column>
-      <el-table-column align="center" width="100px" label="是否启用">
+      <el-table-column align="center" label="是否启用">
         <template slot-scope="scope">
           <span>{{ scope.row.isUsed | statusFilter }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="200px" label="开始时间">
+      <el-table-column align="center" label="开始时间">
         <template slot-scope="scope">
           <span>{{ scope.row.startTime }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" width="200px" label="结束时间">
+      <el-table-column align="center" label="结束时间">
         <template slot-scope="scope">
           <span>{{ scope.row.endTime }}</span>
         </template>
@@ -67,8 +97,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="广告位" prop="fkAdPositionId">
-              <el-select v-model="form.fkAdPositionId" filterable placeholder="请选择" style="wdith:100%;">
+            <el-form-item label="广告位" prop="adPositionId">
+              <el-select v-model="form.adPositionId" filterable placeholder="请选择" style="wdith:100%;">
                 <el-option
                   v-for="item in adPositionOptions"
                   :key="item.value"
@@ -140,7 +170,7 @@
             <el-form-item label="图片">
               <single-upload
                 v-model="form.imageUrl"
-                :upload-id="form.pkAdId"
+                :upload-id="form.id"
                 upload-type="SW1803"
                 style="width: 300px;display: inline-block;margin-left: 10px"/>
             </el-form-item>
@@ -186,7 +216,7 @@ export default {
   data() {
     return {
       form: {
-        fkAdPositionId: undefined,
+        adPositionId: undefined,
         adName: undefined,
         adType: undefined,
         link: undefined,
@@ -234,7 +264,8 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        name: undefined
+        like_name: undefined,
+        eq_ad_position_id: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -292,6 +323,14 @@ export default {
     handleFilter() {
       this.getList(data => {})
     },
+    handleReset() {
+      this.listQuery = {
+        page: 1,
+        limit: 20,
+        like_name: undefined,
+        eq_ad_position_id: undefined
+      }
+    },
     handleSizeChange(val) {
       this.listQuery.limit = val
       this.getList(data => {})
@@ -306,7 +345,7 @@ export default {
       this.dialogFormVisible = true
     },
     handleUpdate(row) {
-      getObj(row.pkAdId).then(response => {
+      getObj(row.id).then(response => {
         this.form = response.data.obj
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
@@ -318,7 +357,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(row.pkAdId)
+        delObj(row.id)
           .then(() => {
             this.$notify({
               title: '成功',
@@ -361,7 +400,7 @@ export default {
         if (valid) {
           this.dialogFormVisible = false
           this.form.password = undefined
-          putObj(this.form.pkAdId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getList(data => {})
             this.$notify({
@@ -378,7 +417,7 @@ export default {
     },
     resetTemp() {
       this.form = {
-        fkAdPositionId: undefined,
+        adPositionId: undefined,
         adName: undefined,
         adType: undefined,
         link: undefined,

@@ -1,14 +1,42 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.like_name" style="width: 200px;" class="filter-item" placeholder="名称" @keyup.enter.native="handleFilter"/>
-      <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="messageManager_btn_add" class="filter-item" style="margin-left: 10px;" type="primary" icon="edit" @click="handleCreate">添加</el-button>
-    </div>
+    <el-card class="search-container" shadow="never">
+      <div style="height: 32px; margin-bottom: 5px;">
+        <i class="el-icon-search"/>
+        <span>筛选搜索</span>
+        <el-button style="float:right" type="primary" size="small" @click="handleFilter()">查询搜索</el-button>
+        <el-button style="float:right;margin-right: 15px" size="small" @click="handleReset()">重置</el-button>
+      </div>
+      <div>
+        <el-form :inline="true" :model="listQuery" size="small">
+          <el-row>
+            <el-col :span="4">
+              <el-form-item label="名称：">
+                <el-input v-model="listQuery.like_name" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="消息类型：">
+                <el-select v-model="listQuery.eq_type" filterable style="wdith:100%;">
+                  <el-option key="SW2701" label="系统广播" value="SW2701"/>
+                  <el-option key="SW2702" label="营销通知" value="SW2702"/>
+                  <el-option key="SW2703" label="每日报送" value="SW2703"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 10px; margin-bottom: 10px;"/>
+      <span>数据列表</span>
+      <el-button v-if="messageManager_btn_add" class="filter-item" style="float:right;" type="primary" @click="handleCreate">添加</el-button>
+    </el-card>
     <el-table v-loading.body="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column v-if="show" align="center" label="pk_message_id">
+      <el-table-column v-if="show" align="center" label="id">
         <template slot-scope="scope">
-          <span>{{ scope.row.pkMessageId }}</span>
+          <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="消息名称">
@@ -87,7 +115,7 @@ export default {
   name: 'Message',
   filters: {
     messageTypeFilter: function(val) {
-      const map =  {
+      const map = {
         'SW2701': '系统广播',
         'SW2702': '营销通知',
         'SW2703': '每日报送'
@@ -130,14 +158,15 @@ export default {
             message: '请输入消息时间',
             trigger: 'blur'
           }
-        ]},
+        ] },
       list: null,
       total: null,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 20,
-        name: undefined
+        like_name: undefined,
+        eq_type: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -175,6 +204,14 @@ export default {
     handleFilter() {
       this.getList()
     },
+    handleReset() {
+      this.listQuery = {
+        page: 1,
+        limit: 20,
+        like_name: undefined,
+        eq_type: undefined
+      }
+    },
     handleSizeChange(val) {
       this.listQuery.limit = val
       this.getList()
@@ -189,7 +226,7 @@ export default {
       this.dialogFormVisible = true
     },
     handleUpdate(row) {
-      getObj(row.pkMessageId).then(response => {
+      getObj(row.id).then(response => {
         this.form = response.data.obj
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
@@ -201,7 +238,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(row.pkMessageId)
+        delObj(row.id)
           .then(() => {
             this.$notify({
               title: '成功',
@@ -244,7 +281,7 @@ export default {
         if (valid) {
           this.dialogFormVisible = false
           this.form.password = undefined
-          putObj(this.form.pkMessageId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getList()
             this.$notify({

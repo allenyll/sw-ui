@@ -1,19 +1,54 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
-      <el-input v-model="listQuery.like_name" style="width: 200px;" class="filter-item" placeholder="名称" @keyup.enter.native="handleFilter"/>
-      <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="specOptionManager_btn_add" class="filter-item" style="margin-left: 10px;" type="primary" icon="edit" @click="handleCreate">添加</el-button>
-    </div>
+    <el-card class="search-container" shadow="never">
+      <div style="height: 32px; margin-bottom: 5px;">
+        <i class="el-icon-search"/>
+        <span>筛选搜索</span>
+        <el-button style="float:right" type="primary" size="small" @click="handleFilter()">查询搜索</el-button>
+        <el-button style="float:right;margin-right: 15px" size="small" @click="handleReset()">重置</el-button>
+      </div>
+      <div>
+        <el-form :inline="true" :model="listQuery" size="small">
+          <el-row>
+            <el-col :span="4">
+              <el-form-item label="名称：">
+                <el-input v-model="listQuery.like_name" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="4">
+              <el-form-item label="编码：">
+                <el-input v-model="listQuery.like_code" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item label="所属规格：">
+                <el-select v-model="listQuery.eq_specs_id" filterable placeholder="请选择规格" style="wdith:236px;">
+                  <el-option
+                    v-for="item in specsOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"/>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 10px; margin-bottom: 10px;"/>
+      <span>数据列表</span>
+      <el-button v-if="specOptionManager_btn_add" class="filter-item" style="float:right;" type="primary" @click="handleCreate">添加</el-button>
+    </el-card>
     <el-table v-loading.body="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column v-if="show" align="center" label="pk_spec_option_id">
         <template slot-scope="scope">
-          <span>{{ scope.row.pkSpecOptionId }}</span>
+          <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="规格">
         <template slot-scope="scope">
-          <span>{{ specsNameMap[scope.row.fkSpecsId] }}</span>
+          <span>{{ specsNameMap[scope.row.specsId] }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="名称">
@@ -40,8 +75,8 @@
     </div>
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
-        <el-form-item label="规格" prop="fkSpecsId">
-          <el-select v-model="form.fkSpecsId" filterable placeholder="请选择规格" style="wdith:236px;">
+        <el-form-item label="规格" prop="specsId">
+          <el-select v-model="form.specsId" filterable placeholder="请选择规格" style="wdith:236px;">
             <el-option
               v-for="item in specsOptions"
               :key="item.value"
@@ -74,12 +109,12 @@ export default {
   data() {
     return {
       form: {
-        fkSpecsId: undefined,
+        specsId: undefined,
         name: undefined,
         code: undefined
       },
       rules: {
-        fkSpecsId: [
+        specsId: [
           {
             required: true,
             message: '请选择规格',
@@ -105,7 +140,8 @@ export default {
         page: 1,
         limit: 20,
         name: undefined,
-        order_code: true
+        order_code: true,
+        eq_specs_id: undefined
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -144,7 +180,7 @@ export default {
       var _id = this.$route.query.id
       // eslint-disable-next-line eqeqeq
       if (_id != '' && _id != null) {
-        this.listQuery.eq_fk_specs_id = _id
+        this.listQuery.eq_specs_id = _id
       }
       page(this.listQuery).then(response => {
         this.list = response.data.list
@@ -157,6 +193,15 @@ export default {
     },
     handleFilter() {
       this.getList(data => {})
+    },
+    handleReset() {
+      this.listQuery = {
+        page: 1,
+        limit: 20,
+        like_name: undefined,
+        like_code: undefined,
+        eq_specs_id: undefined
+      }
     },
     handleSizeChange(val) {
       this.listQuery.limit = val
@@ -172,7 +217,7 @@ export default {
       this.dialogFormVisible = true
     },
     handleUpdate(row) {
-      getObj(row.pkSpecOptionId).then(response => {
+      getObj(row.id).then(response => {
         this.form = response.data.obj
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
@@ -184,7 +229,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        delObj(row.pkSpecOptionId)
+        delObj(row.id)
           .then(() => {
             this.$notify({
               title: '成功',
@@ -227,7 +272,7 @@ export default {
         if (valid) {
           this.dialogFormVisible = false
           this.form.password = undefined
-          putObj(this.form.pkSpecOptionId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getList(data => {})
             this.$notify({
@@ -244,7 +289,7 @@ export default {
     },
     resetTemp() {
       this.form = {
-        fkSpecsId: undefined,
+        specsId: undefined,
         name: undefined,
         code: undefined
       }

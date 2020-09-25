@@ -1,7 +1,7 @@
 <template>
   <div style="margin-top: 50px;">
     <el-form ref="goodsAttrForm" :model="value" label-width="120px" style="width: 720px" size="small">
-      <el-form-item label="所属分类" prop="fkSpecCategoryId">
+      <el-form-item label="所属分类" prop="specCategoryId">
         <el-cascader
           :props="categoryProps"
           v-model="selectAttrCategory"
@@ -20,8 +20,8 @@
             <el-checkbox-group v-model="specsList[idx].values">
               <el-checkbox
                 v-for="item in goodsAttr.specOptions"
-                :label="item.pkSpecOptionId"
-                :key="item.pkSpecOptionId"
+                :label="item.id"
+                :key="item.id"
                 class="littleMarginLeft">
                 {{ item.name }}
               </el-checkbox>
@@ -115,7 +115,7 @@
             <span>{{ item.name }}:</span>
             <single-upload
               v-model="item.pic"
-              :upload-id="value.pkGoodsId"
+              :upload-id="value.id"
               upload-type="SW1803"
               style="width: 300px;display: inline-block;margin-left: 10px"/>
           </div>
@@ -124,7 +124,7 @@
       <el-form-item label="商品相册：">
         <multi-upload
           v-model="selectSkuPics"
-          :upload-id="value.pkGoodsId"
+          :upload-id="value.id"
           upload-type="SW1801"
           style="display: inline-block;margin-left: 10px"
           @removeFile="removeFile"/>
@@ -192,10 +192,10 @@ export default {
     productId: function(newValue) {
       if (!this.isEdit) return
       if (newValue === undefined || newValue == null || newValue === 0) return
-      this.handleEdit(this.value.parentSpecCategoryId, this.value.fkSpecCategoryId)
+      this.handleEdit(this.value.parentSpecCategoryId, this.value.specCategoryId)
       this.getSpecsList(this.value.specsList, this.value.skuStockMapList)
       this.resetSkuSpecPic(this.value.specsList)
-      return this.value.pkGoodsId
+      return this.value.id
     },
     logOut: function(newValue) {
       return this.$store.state.logOut
@@ -203,15 +203,15 @@ export default {
   },
   watch: {
     productId() {
-      return this.value.pkGoodsId
+      return this.value.id
     },
     selectAttrCategory: function(newValue) {
       if (newValue != null && newValue.length >= 1) {
-        this.value.fkSpecCategoryId = newValue[newValue.length - 1]
+        this.value.specCategoryId = newValue[newValue.length - 1]
       } else {
-        this.value.fkSpecCategoryId = null
+        this.value.specCategoryId = null
       }
-      // this.changeCategory(this.value.fkSpecCategoryId)
+      // this.changeCategory(this.value.specCategoryId)
     },
     specsList: function(value) {
       // console.log(value)
@@ -223,7 +223,7 @@ export default {
         return
       }
       this.getSpecOptionList()
-      this.getFileList(this.value.pkGoodsId)
+      this.getFileList(this.value.id)
     })
   },
   methods: {
@@ -311,12 +311,12 @@ export default {
         this.value.specsList = []
         // this.value.skuStockMapList = []
       }
-      if (selectId.length > 1) {
+      if (selectId.length > 0) {
         const param = {
           categoryId: selectId[selectId.length - 1]
         }
         getSpecsListCondition(param).then(res => {
-          if (res.data.code === '100000') {
+          if (res.code === '100000') {
             const list = res.data.list
             if (list.length > 0) {
               for (let i = 0; i < list.length; i++) {
@@ -324,6 +324,7 @@ export default {
               }
             }
             this.specsList = list
+            console.log('切换分类获取的规格：' + this.specsList)
           }
         })
       }

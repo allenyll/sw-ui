@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-sys/file/'
+const path = '/api-web/file/'
 
 export function getFileList(param) {
   return request({

@@ -95,7 +95,7 @@
           <template slot-scope="scope">{{ scope.row.useTime }}</template>
         </el-table-column>
         <el-table-column label="订单编号" align="center">
-          <template slot-scope="scope">{{ scope.row.orderNo === null?'N/A':scope.row.orderNo }}</template>
+          <template slot-scope="scope">{{ scope.row.orderNo === null?'未使用':scope.row.orderNo }}</template>
         </el-table-column>
       </el-table>
     </div>
@@ -122,7 +122,7 @@ const defaultListQuery = {
   limit: 10,
   eq_use_status: null,
   eq_order_no: null,
-  eq_fk_coupon_id: null
+  eq_coupon_id: null
 }
 export default {
   name: 'CouponDetail',
@@ -198,7 +198,7 @@ export default {
     getObj(this.$route.query.id).then(response => {
       this.coupon = response.data.obj
     })
-    this.listQuery.eq_fk_coupon_id = this.$route.query.id
+    this.listQuery.eq_coupon_id = this.$route.query.id
     this.getList()
   },
   methods: {

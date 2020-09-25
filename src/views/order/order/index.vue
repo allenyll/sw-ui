@@ -69,7 +69,7 @@
         @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="60" align="center"/>
         <el-table-column v-if="show" label="编号" width="80" align="center">
-          <template slot-scope="scope">{{ scope.row.pkOrderId }}</template>
+          <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
         <el-table-column label="订单编号" width="200" align="center">
           <template slot-scope="scope">{{ scope.row.orderNo }}</template>
@@ -337,11 +337,11 @@ export default {
       this.multipleSelection = val
     },
     handleViewOrder(index, row) {
-      this.$router.push({ path: '/order/orderDetail', query: { id: row.pkOrderId }})
+      this.$router.push({ path: '/order/orderDetail', query: { id: row.id }})
     },
     handleCloseOrder(index, row) {
       this.closeOrder.dialogVisible = true
-      this.closeOrder.orderIds = [row.pkOrderId]
+      this.closeOrder.orderIds = [row.id]
     },
     handleDeliveryOrder(index, row) {
       console.log(row)
@@ -353,7 +353,7 @@ export default {
     },
     handleDeleteOrder(index, row) {
       const ids = []
-      ids.push(row.pkOrderId)
+      ids.push(row.id)
       this.deleteOrder(ids)
     },
     handleBatchOperate() {
@@ -386,14 +386,14 @@ export default {
         // 关闭订单
         this.closeOrder.orderIds = []
         for (let i = 0; i < this.multipleSelection.length; i++) {
-          this.closeOrder.orderIds.push(this.multipleSelection[i].pkOrderId)
+          this.closeOrder.orderIds.push(this.multipleSelection[i].id)
         }
         this.closeOrder.dialogVisible = true
       } else if (this.operateType === 3) {
         // 删除订单
         const ids = []
         for (let i = 0; i < this.multipleSelection.length; i++) {
-          ids.push(this.multipleSelection[i].pkOrderId)
+          ids.push(this.multipleSelection[i].id)
         }
         this.deleteOrder(ids)
       }
@@ -459,7 +459,7 @@ export default {
     covertOrder(order) {
       const address = order.province + order.city + order.region + order.detailAddress
       const listItem = {
-        orderId: order.pkOrderId,
+        orderId: order.id,
         orderNo: order.orderNo,
         receiverName: order.name,
         receiverPhone: order.phone,

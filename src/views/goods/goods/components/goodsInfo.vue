@@ -39,7 +39,7 @@
       </el-row>
       <el-row>
         <el-col :span="12">
-          <el-form-item label="所属分类" prop="fkCategoryId">
+          <el-form-item label="所属分类" prop="categoryId">
             <el-cascader
               :props="categoryProps"
               v-model="selectCategory"
@@ -48,8 +48,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="品牌" prop="fkBrandId">
-            <el-select v-model="value.fkBrandId" filterable placeholder="请选择">
+          <el-form-item label="品牌" prop="brandId">
+            <el-select v-model="value.brandId" filterable placeholder="请选择">
               <el-option
                 v-for="item in brandOptions"
                 :key="item.value"
@@ -205,13 +205,13 @@ export default {
         value: 'id'
       },
       rules: {
-        fkBrandId: [
+        brandId: [
           {
             required: true,
             message: '请输入品牌主键',
             trigger: 'blur'
           }
-        ], fkCategoryId: [
+        ], categoryId: [
           {
             required: true,
             message: '请输入分类主键',
@@ -293,22 +293,22 @@ export default {
     productId: function(newValue) {
       if (!this.isEdit) return
       if (newValue === undefined || newValue == null || newValue === 0) return
-      this.handleEdit(this.value.parentCategoryId, this.value.fkCategoryId)
-      return this.value.pkGoodsId
+      this.handleEdit(this.value.parentCategoryId, this.value.categoryId)
+      return this.value.id
     }
   },
   watch: {
     productId() {
-      return this.value.pkGoodsId
+      return this.value.id
     },
     selectCategory: function(newValue) {
       console.log(newValue)
       console.log(newValue.length)
       if (newValue != null && newValue.length >= 1) {
-        this.value.fkCategoryId = newValue[newValue.length - 1]
-        console.log(this.value.fkCategoryId)
+        this.value.categoryId = newValue[newValue.length - 1]
+        console.log(this.value.categoryId)
       } else {
-        this.value.fkCategoryId = null
+        this.value.categoryId = null
       }
     }
   },
