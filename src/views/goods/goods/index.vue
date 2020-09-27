@@ -27,7 +27,7 @@
             <el-input v-model="listQuery.eq_goods_code" class="input-width" placeholder="商品编号"/>
           </el-form-item>
           <el-form-item label="品牌：">
-            <el-select v-model="listQuery.eq_fk_brand_id" class="input-width" filterable placeholder="请选择品牌">
+            <el-select v-model="listQuery.eq_brand_id" class="input-width" filterable placeholder="请选择品牌">
               <el-option key="" label="全部" value=""/>
               <el-option
                 v-for="item in brandOptions"
@@ -37,7 +37,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="商品分类：">
-            <el-select v-model="listQuery.eq_fk_category_id" class="input-width" filterable placeholder="请选择分类">
+            <el-select v-model="listQuery.eq_category_id" class="input-width" filterable placeholder="请选择分类">
               <el-option key="" label="全部" value=""/>
               <el-option
                 v-for="item in categoryOptions"
@@ -64,39 +64,6 @@
         </el-form>
       </div>
     </el-card>
-    <!-- <div class="filter-container">
-      <el-input v-model="listQuery.like_goods_name" style="width: 190px;" class="filter-item" placeholder="名称" @keyup.enter.native="handleFilter"/>
-      <el-input v-model="listQuery.eq_goods_code" style="width: 190px;" class="filter-item" placeholder="编码" @keyup.enter.native="handleFilter"/>
-      <el-select v-model="listQuery.eq_fk_brand_id" style="width: 190px;" class="filter-item" filterable placeholder="请选择品牌" @keyup.enter.native="handleFilter">
-        <el-option key="" label="全部" value=""/>
-        <el-option
-          v-for="item in brandOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"/>
-      </el-select>
-      <el-select v-model="listQuery.eq_fk_category_id" style="width: 190px;" class="filter-item" filterable placeholder="请选择分类" @keyup.enter.native="handleFilter">
-        <el-option key="" label="全部" value=""/>
-        <el-option
-          v-for="item in categoryOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"/>
-      </el-select>
-      <el-select v-model="listQuery.eq_is_used" style="width: 190px;" class="filter-item" placeholder="请选择启用状态" @keyup.enter.native="handleFilter">
-        <el-option key="" label="全部" value=""/>
-        <el-option key="SW1302" label="启用" value="SW1302"/>
-        <el-option key="SW1301" label="停用" value="SW1301"/>
-      </el-select>
-      <el-select v-model="listQuery.eq_status" style="width: 190px;" class="filter-item" placeholder="请选择商品状态" @keyup.enter.native="handleFilter">
-        <el-option key="" label="全部" value=""/>
-        <el-option key="SW1401" label="上架" value="SW1401"/>
-        <el-option key="SW1402" label="下架" value="SW1402"/>
-        <el-option key="SW1403" label="预售" value="SW1403"/>
-      </el-select>
-      <el-button class="filter-item" type="primary" icon="search" @click="handleFilter">搜索</el-button>
-      <el-button v-if="goodsManager_btn_add" class="filter-item" style="margin-left: 10px;" type="primary" icon="edit" @click="handleCreate">添加</el-button>
-    </div> -->
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"/>
       <span>数据列表</span>
@@ -107,7 +74,7 @@
         width="55"/>
       <el-table-column v-if="show" align="center" label="pk_goods_id">
         <template slot-scope="scope">
-          <span>{{ scope.row.pkGoodsId }}</span>
+          <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="图片">
@@ -118,7 +85,7 @@
       <el-table-column align="center" width="120" label="商品名称">
         <template slot-scope="scope">
           <p>{{ scope.row.goodsName }}</p>
-          <p>品牌：{{ brandNameMap[scope.row.fkBrandId] }}</p>
+          <p>品牌：{{ brandNameMap[scope.row.brandId] }}</p>
         </template>
       </el-table-column>
       <el-table-column align="center" width="150" label="商品价格/编码">
@@ -129,7 +96,7 @@
       </el-table-column>
       <el-table-column align="center" label="分类">
         <template slot-scope="scope">
-          <span>{{ categoryNameMap[scope.row.fkCategoryId] }}</span>
+          <span>{{ categoryNameMap[scope.row.categoryId] }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="库存量">
@@ -144,21 +111,21 @@
               v-model="scope.row.isUsed"
               active-value="SW1302"
               inactive-value="SW1301"
-              @change="handleLabel(scope.$index, scope.row.pkGoodsId, scope.row.isUsed, 'isUsed')"/>
+              @change="handleLabel(scope.$index, scope.row.id, scope.row.isUsed, 'isUsed')"/>
           </p>
           <p>推荐：
             <el-switch
               v-model="scope.row.isRecom"
               active-value="SW1001"
               inactive-value="SW1002"
-              @change="handleLabel(scope.$index, scope.row.pkGoodsId, scope.row.isRecom, 'isRecom')"/>
+              @change="handleLabel(scope.$index, scope.row.id, scope.row.isRecom, 'isRecom')"/>
           </p>
           <p>规格：
             <el-switch
               v-model="scope.row.isSpec"
               active-value="SW1001"
               inactive-value="SW1002"
-              @change="handleLabel(scope.$index, scope.row.pkGoodsId, scope.row.isSpec, 'isSpec')"/>
+              @change="handleLabel(scope.$index, scope.row.id, scope.row.isSpec, 'isSpec')"/>
           </p>
         </template>
       </el-table-column>
@@ -169,21 +136,21 @@
               v-model="scope.row.isBest"
               active-value="SW1001"
               inactive-value="SW1002"
-              @change="handleLabel(scope.$index, scope.row.pkGoodsId, scope.row.isBest, 'isBest')"/>
+              @change="handleLabel(scope.$index, scope.row.id, scope.row.isBest, 'isBest')"/>
           </p>
           <p>热卖：
             <el-switch
               v-model="scope.row.isHot"
               active-value="SW1001"
               inactive-value="SW1002"
-              @change="handleLabel(scope.$index, scope.row.pkGoodsId, scope.row.isHot, 'isHot')"/>
+              @change="handleLabel(scope.$index, scope.row.id, scope.row.isHot, 'isHot')"/>
           </p>
           <p>新品：
             <el-switch
               v-model="scope.row.isNew"
               active-value="SW1001"
               inactive-value="SW1002"
-              @change="handleLabel(scope.$index, scope.row.pkGoodsId, scope.row.isNew, 'isNew')"/>
+              @change="handleLabel(scope.$index, scope.row.id, scope.row.isNew, 'isNew')"/>
           </p>
         </template>
       </el-table-column>
@@ -286,8 +253,8 @@ const defaultListQuery = {
   name: undefined,
   like_goods_name: '',
   eq_goods_code: '',
-  eq_fk_brand_id: '',
-  eq_fk_category_id: '',
+  eq_brand_id: '',
+  eq_category_id: '',
   eq_is_used: '',
   eq_status: ''
 }
@@ -354,11 +321,9 @@ export default {
         keyword: null
       },
       form: {
-        fkBrandId: undefined,
-        fkCategoryId: undefined,
-        fkColorId: undefined,
-        fkUnitId: undefined,
-        fkSizeId: undefined,
+        brandId: undefined,
+        categoryId: undefined,
+        unitId: undefined,
         goodsName: undefined,
         goodsCode: undefined,
         goodsBarCode: undefined,
@@ -388,97 +353,6 @@ export default {
         appraiseNum: undefined,
         goodsTips: undefined,
         remark: undefined
-      },
-      rules: {
-        fkBrandId: [
-          {
-            required: true,
-            message: '请输入品牌主键',
-            trigger: 'blur'
-          }
-        ], fkCategoryId: [
-          {
-            required: true,
-            message: '请输入分类主键',
-            trigger: 'blur'
-          }
-        ], fkColorId: [
-          {
-            required: true,
-            message: '请输入颜色主键',
-            trigger: 'blur'
-          }
-        ],
-        fkSizeId: [
-          {
-            required: true,
-            message: '请输入尺码主键',
-            trigger: 'blur'
-          }
-        ],
-        goodsName: [
-          {
-            required: true,
-            message: '请输入商品名称',
-            trigger: 'blur'
-          }
-        ],
-        goodsCode: [
-          {
-            required: true,
-            message: '请输入商品编码',
-            trigger: 'blur'
-          }
-        ],
-        price: [
-          {
-            required: true,
-            message: '请输入商品价格',
-            trigger: 'blur'
-          }
-        ],
-        stock: [
-          {
-            required: true,
-            message: '请输入库存量',
-            trigger: 'blur'
-          }
-        ],
-        season: [
-          {
-            required: true,
-            message: '请输入季节性',
-            trigger: 'blur'
-          }
-        ],
-        unit: [
-          {
-            required: true,
-            message: '请输入单位',
-            trigger: 'blur'
-          }
-        ],
-        isUsed: [
-          {
-            required: true,
-            message: '请输入是否启用',
-            trigger: 'blur'
-          }
-        ],
-        status: [
-          {
-            required: true,
-            message: '请输入商品状态',
-            trigger: 'blur'
-          }
-        ],
-        saleTime: [
-          {
-            required: true,
-            message: '请选择上架时间',
-            trigger: 'blur'
-          }
-        ]
       },
       list: null,
       total: null,
@@ -642,10 +516,10 @@ export default {
       this.$refs.tinymce.setContent(this.form.goodsDesc)
     },
     handleUpdate(row) {
-      this.$router.push({ path: '/goods/updateGoods', query: { id: row.pkGoodsId }})
-      // this.goodsId = row.pkGoodsId
+      this.$router.push({ path: '/goods/updateGoods', query: { id: row.id }})
+      // this.goodsId = row.id
       // this.getFileList(this.goodsId)
-      // getObj(row.pkGoodsId)
+      // getObj(row.id)
       //   .then(response => {
       //     this.form = response.data.obj
       //     this.dialogFormVisible = true
@@ -660,7 +534,7 @@ export default {
         type: 'warning'
       })
         .then(() => {
-          delObj(row.pkGoodsId)
+          delObj(row.id)
             .then(() => {
               this.$notify({
                 title: '成功',
@@ -704,7 +578,7 @@ export default {
       set[formName].validate(valid => {
         if (valid) {
           this.dialogFormVisible = false
-          putObj(this.form.pkGoodsId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getList(data => {})
             this.$notify({
@@ -750,10 +624,10 @@ export default {
     },
     showSkuStockDialog(index, row) {
       this.skuStockForm.dialogVisible = true
-      this.skuStockForm.goodsId = row.pkGoodsId
+      this.skuStockForm.goodsId = row.id
       this.skuStockForm.goodsCode = row.goodsCode
       this.skuStockForm.keyword = null
-      getSkuStockList(row.pkGoodsId, { keyword: this.skuStockForm.keyword }).then(response => {
+      getSkuStockList(row.id, { keyword: this.skuStockForm.keyword }).then(response => {
         this.skuStockForm.specList = response.data.specList
         this.skuStockForm.stockList = response.data.stockList
       })
@@ -780,16 +654,13 @@ export default {
           })
           this.skuStockForm.dialogVisible = false
         })
-      })
-      console.log('updateSkuStock')
+      }).catch({})
     },
     resetTemp() {
       this.form = {
-        fkBrandId: undefined,
-        fkCategoryId: undefined,
-        fkColorId: undefined,
-        fkUnitId: undefined,
-        fkSizeId: undefined,
+        brandId: undefined,
+        categoryId: undefined,
+        unitId: undefined,
         goodsName: undefined,
         goodsCode: undefined,
         goodsBarCode: undefined,
