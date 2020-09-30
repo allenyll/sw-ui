@@ -1,10 +1,16 @@
+import Vue from 'vue'
 import axios from 'axios'
 import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
-
+import { getAuthUrl } from '@/utils/common'
+import VueJsonp from 'vue-jsonp'
+Vue.use(VueJsonp)
+// 请求超时5s
+Vue.use(VueJsonp, 5000)
 // const baseURLStr = window.g.BASE_API
 const baseUrl = process.env.BASE_API
+const url = getAuthUrl()
 
 // 创建一个 axios 实例
 const service = axios.create({
@@ -15,6 +21,17 @@ const service = axios.create({
 // request 拦截器
 service.interceptors.request.use(
   config => {
+    Vue.jsonp(process.env.SSO_CONFIG.AUTH_URL).then(json => {
+      if (!json.isLogin) {
+        MessageBox.confirm('登录失效', '重新登录', { // '你已被登出，可以取消继续留在该页面，或者重新登录'
+          confirmButtonText: '重新登录',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          window.location.href = url
+        })
+      }
+    })
     // 发送请求之前携带token
     if (store.getters.token) {
       // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
