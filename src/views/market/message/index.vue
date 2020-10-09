@@ -44,9 +44,9 @@
           <span>{{ scope.row.messageName }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="消息内容" width="400px">
+      <el-table-column align="center" label="消息摘要" width="400px">
         <template slot-scope="scope">
-          <span>{{ scope.row.content }}</span>
+          <span>{{ scope.row.abstractMsg }}</span>
         </template>
       </el-table-column>
       <el-table-column align="center" label="消息类型" width="150px">
@@ -92,11 +92,11 @@
             value-format="yyyy-MM-dd HH:mm:ss"
           />
         </el-form-item>
-        <el-form-item label="消息内容" prop="content">
-          <el-input v-model="form.content" type="textarea" placeholder="请输入消息内容"/>
-        </el-form-item>
         <el-form-item label="消息摘要" prop="abstractMsg">
           <el-input v-model="form.abstractMsg" type="textarea" placeholder="请输入消息摘要"/>
+        </el-form-item>
+        <el-form-item label="消息内容">
+          <tinymce ref="tinymce" :width="595" :height="300" v-model="form.content"/>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -111,8 +111,12 @@
 <script>
 import { page, addObj, getObj, delObj, putObj } from '@/api/market/message/index'
 import { mapGetters } from 'vuex'
+import Tinymce from '@/components/Tinymce'
 export default {
   name: 'Message',
+  components: {
+    Tinymce
+  },
   filters: {
     messageTypeFilter: function(val) {
       const map = {
@@ -227,6 +231,7 @@ export default {
     },
     handleUpdate(row) {
       getObj(row.id).then(response => {
+        this.refs.tinymce.setContent(response.data.obj.content)
         this.form = response.data.obj
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
@@ -286,7 +291,7 @@ export default {
             this.getList()
             this.$notify({
               title: '成功',
-              message: '创建成功',
+              message: '更新成功',
               type: 'success',
               duration: 2000
             })

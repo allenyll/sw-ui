@@ -2,7 +2,7 @@
   <div class="upload-container">
     <el-button :style="{background:color,borderColor:color}" icon="el-icon-upload" size="mini" type="primary" @click=" dialogVisible=true">上传图片
     </el-button>
-    <el-dialog :visible.sync="dialogVisible">
+    <el-dialog :visible.sync="dialogVisible" append-to-body>
       <el-upload
         :multiple="true"
         :file-list="fileList"
@@ -55,7 +55,7 @@ export default {
       formData.append('type', 'SW1803')
       formData.append('id', '0')
 
-      axios.post(baseUrl + 'api-file/file/upload', formData, config).then((res) => {
+      axios.post(baseUrl + 'api-web/file/upload', formData, config).then((res) => {
         // 做处理
         if (res.data.code === '100000') {
           const uid = content.file.uid
