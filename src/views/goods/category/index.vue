@@ -77,9 +77,11 @@
         </el-form-item>
         <el-form-item label="图片">
           <multi-upload
+            v-if="form.id"
+            ref="upload"
             v-model="fileList"
             :max-count="maxCount"
-            :upload-id="form.pkCategoryId"
+            :upload-id="form.id"
             upload-type="SW1802"
             style="display: inline-block;margin-left: 10px"
             @removeFile="removeFile"/>
@@ -121,6 +123,7 @@
 <script>
 import multiUpload from '@/components/Upload/multiUpload'
 import { tree, addObj, getObj, delObj, putObj, categoryTree } from '@/api/goods/category/index'
+import { getSnowFlakeId } from '@/api/goods/goods/index'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Category',
@@ -167,7 +170,7 @@ export default {
       //   }
       // ],
       form: {
-        pkCategoryId: undefined,
+        id: undefined,
         categoryNo: undefined,
         categoryName: undefined,
         parentId: undefined,
@@ -287,6 +290,11 @@ export default {
     this.categoryManager_btn_add = this.elements['goods:category:add']
   },
   methods: {
+    getSnowFlakeId() {
+      return getSnowFlakeId().then(res => {
+        return res.data.id
+      })
+    },
     getList(callback) {
       this.listLoading = true
       tree(this.listQuery)
@@ -370,8 +378,11 @@ export default {
     },
     handleCreate() {
       this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
+      this.getSnowFlakeId().then(id => {
+        this.form.id = id
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+      })
     },
     handleUpdate(row) {
       getObj(row.id)
@@ -380,6 +391,7 @@ export default {
           this.fileUrl = fileUrl
           if (fileUrl !== undefined && fileUrl !== '' && fileUrl !== null) {
             var data = {
+              id: response.data.file.id,
               name: '分类',
               url: response.data.file.fileUrl
             }
@@ -456,7 +468,7 @@ export default {
           this.dialogFormVisible = false
           console.log(this.fileList)
           this.form.fileList = this.fileList
-          putObj(this.form.pkCategoryId, this.form).then(() => {
+          putObj(this.form.id, this.form).then(() => {
             this.dialogFormVisible = false
             this.getList(data => {})
             this.getCategoryTree()

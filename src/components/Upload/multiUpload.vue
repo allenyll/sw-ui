@@ -22,6 +22,7 @@
 <script>
 import { getToken } from '@/utils/auth'
 import axios from 'axios'
+import { removeFileById } from '@/api/admin/file/index'
 
 const baseUrl = process.env.BASE_API
 
@@ -85,7 +86,7 @@ export default {
         if (res.data.code === '100000') {
           const data = {
             name: '图片',
-            url: res.data.url
+            url: res.data.data.url
           }
           this.value.push(data)
           self.uploadMessage = '上传成功！'
@@ -107,11 +108,14 @@ export default {
     },
     // 删除文件之前的钩子函数
     handleRemove(file, fileList) {
-      this.$emit('removeFile', fileList)
-      this.$message({
-        type: 'info',
-        message: '已删除原有图片',
-        duration: 3000
+      console.log(file)
+      removeFileById(file.id).then(res => {
+        this.$emit('removeFile', fileList)
+        this.$message({
+          type: 'info',
+          message: '已删除原有图片',
+          duration: 3000
+        })
       })
     },
     // 点击列表中已上传的文件事的钩子函数

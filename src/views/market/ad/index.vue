@@ -169,6 +169,7 @@
           <el-col :span="24">
             <el-form-item label="图片">
               <single-upload
+                v-if="form.id"
                 v-model="form.imageUrl"
                 :upload-id="form.id"
                 upload-type="SW1803"
@@ -189,6 +190,7 @@
 <script>
 import { page, addObj, getObj, delObj, putObj } from '@/api/market/ad/index'
 import { list as getAdPositionList } from '@/api/market/adPosition/index'
+import { getSnowFlakeId } from '@/api/goods/goods/index'
 import { mapGetters } from 'vuex'
 import singleUpload from '@/components/Upload/singleUpload'
 export default {
@@ -216,6 +218,7 @@ export default {
   data() {
     return {
       form: {
+        id: undefined,
         adPositionId: undefined,
         adName: undefined,
         adType: undefined,
@@ -303,6 +306,11 @@ export default {
     this.adManager_btn_add = this.elements['market:ad:add']
   },
   methods: {
+    getSnowFlakeId() {
+      return getSnowFlakeId().then(res => {
+        return res.data.id
+      })
+    },
     getList(callback) {
       this.listLoading = true
       page(this.listQuery).then(response => {
@@ -341,8 +349,11 @@ export default {
     },
     handleCreate() {
       this.resetTemp()
-      this.dialogStatus = 'create'
-      this.dialogFormVisible = true
+      this.getSnowFlakeId().then(id => {
+        this.form.id = id
+        this.dialogStatus = 'create'
+        this.dialogFormVisible = true
+      })
     },
     handleUpdate(row) {
       getObj(row.id).then(response => {
@@ -405,7 +416,7 @@ export default {
             this.getList(data => {})
             this.$notify({
               title: '成功',
-              message: '创建成功',
+              message: '更新成功',
               type: 'success',
               duration: 2000
             })

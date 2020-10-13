@@ -186,7 +186,7 @@ export default {
           updateGoods(this.$route.query.id, this.goodsParam).then(response => {
             this.$message({
               type: 'success',
-              message: '提交成功',
+              message: '更新成功',
               duration: 1000
             })
             this.$router.back()
@@ -195,7 +195,7 @@ export default {
           createGoods(this.goodsParam).then(response => {
             this.$message({
               type: 'success',
-              message: '提交成功',
+              message: '新建成功',
               duration: 1000
             })
             location.reload()

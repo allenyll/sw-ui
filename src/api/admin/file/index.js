@@ -73,3 +73,10 @@ export function download(file) {
     method: 'post'
   })
 }
+
+export function removeFileById(id) {
+  return request({
+    url: path + 'removeFileById?fileId=' + id,
+    method: 'get'
+  })
+}

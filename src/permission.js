@@ -70,17 +70,14 @@ router.beforeEach((to, from, next) => {
         if (whiteList.indexOf(to.path) !== -1) { // 在免登录白名单，直接进入
           next()
         } else {
-          // next(`/login?redirect=${to.path}`) // 否则全部重定向到登录页
-          // jsonp('http://localhost:8088/auth/loginPage', to.path, {})
           console.log(url)
           window.location.href = url
-          // this.$jsonp('http://localhost:8088/login', to.path).then(res => {
-          //   console.log(res)
-          // })
           NProgress.done() // if current page is login will not trigger afterEach hook, so manually handle it
         }
       }
     }
+  }).catch(() => {
+    window.location.href = url
   })
 })
 

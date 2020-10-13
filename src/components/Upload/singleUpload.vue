@@ -26,6 +26,7 @@
 <script>
 import { getToken } from '@/utils/auth'
 import axios from 'axios'
+import { removeFileById } from '@/api/admin/file/index'
 const baseUrl = process.env.BASE_API
 export default {
   name: 'SingleUpload',
@@ -97,12 +98,13 @@ export default {
         // 做处理
         // this.getFileList(this.goodsId)
         if (res.data.code === '100000') {
+          console.log(res)
           const data = {
             name: '图片',
-            url: res.data.url
+            url: res.data.data.url
           }
           this.fileList.push(data)
-          this.emitInput(res.data.url)
+          this.emitInput(res.data.data.url)
           self.uploadMessage = '上传成功！'
         }
       }).catch((error) => {
@@ -122,7 +124,14 @@ export default {
     },
     // 删除文件之前的钩子函数
     handleRemove(file, fileList) {
-      this.emitInput('')
+      removeFileById(file.id).then(res => {
+        this.emitInput('')
+        this.$message({
+          type: 'info',
+          message: '已删除原有图片',
+          duration: 3000
+        })
+      })
     },
     // 点击列表中已上传的文件事的钩子函数
     handlePreview(file) {

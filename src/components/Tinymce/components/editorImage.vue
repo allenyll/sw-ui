@@ -44,7 +44,7 @@ export default {
     myUpload(content) {
       const token = getToken()
       const config = {
-        header: {
+        headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': token,
           'login-type': 'sweb'
@@ -53,9 +53,9 @@ export default {
       const formData = new FormData()
       formData.append('file', content.file)
       formData.append('type', 'SW1803')
-      formData.append('id', '0')
+      formData.append('id', 0)
 
-      axios.post(baseUrl + 'api-web/file/upload', formData, config).then((res) => {
+      axios.post(baseUrl + '/api-web/file/upload', formData, config).then((res) => {
         // 做处理
         if (res.data.code === '100000') {
           const uid = content.file.uid
@@ -64,8 +64,8 @@ export default {
           console.log(objKeyArr)
           for (let i = 0, len = objKeyArr.length; i < len; i++) {
             if (this.listObj[objKeyArr[i]].uid === uid) {
-              this.fileList.push({ url: res.data.url })
-              this.listObj[objKeyArr[i]].url = res.data.url
+              this.fileList.push({ url: res.data.data.url })
+              this.listObj[objKeyArr[i]].url = res.data.data.url
               this.listObj[objKeyArr[i]].hasSuccess = true
               return
             }

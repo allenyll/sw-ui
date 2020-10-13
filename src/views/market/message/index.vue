@@ -231,7 +231,7 @@ export default {
     },
     handleUpdate(row) {
       getObj(row.id).then(response => {
-        this.refs.tinymce.setContent(response.data.obj.content)
+        this.$refs.tinymce.setContent(response.data.obj.content)
         this.form = response.data.obj
         this.dialogFormVisible = true
         this.dialogStatus = 'update'
