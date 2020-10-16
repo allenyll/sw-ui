@@ -27,13 +27,13 @@ router.beforeEach((to, from, next) => {
   NProgress.start() // 开启Progress
   Vue.jsonp(process.env.SSO_CONFIG.AUTH_URL).then(json => {
     if (!json.isLogin) {
-      MessageBox.confirm('登录失效', '重新登录', { // '你已被登出，可以取消继续留在该页面，或者重新登录'
-        confirmButtonText: '重新登录',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        window.location.href = url
-      })
+      // MessageBox.confirm('登录失效', '重新登录', { // '你已被登出，可以取消继续留在该页面，或者重新登录'
+      //   confirmButtonText: '重新登录',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      // })
+      window.location.href = url
     } else {
       if (getToken()) { // 判断是否有token
         /* 有 token */

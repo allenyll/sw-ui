@@ -1,5 +1,5 @@
 import { loginByUsername, logout, getUserInfo } from '@/api/login'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { getToken, setToken, removeToken, removeUID } from '@/utils/auth'
 import router from '@/router'
 
 const user = {
@@ -124,6 +124,7 @@ const user = {
           commit('SET_TOKEN', '')
           commit('SET_ROLES', [])
           removeToken()
+          removeUID()
           resolve()
         }).catch(error => {
           reject(error)

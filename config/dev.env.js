@@ -6,6 +6,7 @@ module.exports = {
     AUTH_STATUS_URL: '"http://localhost:8088/auth/getAuthStatus"',
     AUTH_URL: '"http://localhost:8088/auth/authStatus"',
     GET_AUTH_URL: '"http://localhost:8088/auth/doGet"',
-    SSO_URL: '"http://localhost:8088/auth/loginPage"'
+    SSO_URL: '"http://localhost:8088/auth/loginPage"',
+    SSO_LOGOUT_URL: '"http://localhost:8088/auth/logout?service=http://localhost:8888/#/dashboard"'
   }
 }

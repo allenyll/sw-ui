@@ -134,7 +134,7 @@ export const asyncRouterMap = [
         name: '接口文档',
         children: [
           {
-            path: 'http://snu.allenyll.com:10001/swagger-ui.html',
+            path: 'http://www.allenyll.com:10001/swagger-ui.html',
             meta: { title: '接口文档', icon: 'sw-interface' }
           }
         ]

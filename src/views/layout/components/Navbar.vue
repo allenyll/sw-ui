@@ -76,8 +76,11 @@ export default {
     },
     logout() {
       this.$store.dispatch('FedLogOut').then(() => {
-        location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+        window.location.href = process.env.SSO_CONFIG.SSO_LOGOUT_URL
       })
+      // this.$store.dispatch('FedLogOut').then(() => {
+      //   location.reload()// In order to re-instantiate the vue-router object to avoid bugs
+      // })
     }
   }
 }
