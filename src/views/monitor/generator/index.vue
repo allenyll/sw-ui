@@ -1,26 +1,49 @@
 <template>
   <div class="app-container calendar-list-container">
-    <div class="filter-container">
+    <!-- <div class="filter-container">
       <el-input v-model="listQuery.tableName" style="width: 200px;" class="filter-item" placeholder="表名称" @keyup.enter.native="handleFilter"/>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>
-    </div>
+    </div> -->
+    <el-card class="search-container" shadow="never">
+      <div style="height: 32px; margin-bottom: 5px;">
+        <i class="el-icon-search"/>
+        <span>筛选搜索</span>
+        <el-button style="float:right" type="primary" size="small" @click="handleFilter()">查询搜索</el-button>
+        <el-button style="float:right;margin-right: 15px" size="small" @click="handleReset()">重置</el-button>
+      </div>
+      <div>
+        <el-form :inline="true" :model="listQuery" size="small">
+          <el-row>
+            <el-col :span="6">
+              <el-form-item label="字典名称：">
+                <el-input v-model="listQuery.tableName" class="input-width" placeholder="手工录入，模糊查询"/>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets" style="margin-top: 10px; margin-bottom: 10px;"/>
+      <span>数据列表</span>
+    </el-card>
     <el-table v-loading.body="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%">
-      <el-table-column align="center" label="表名" width="350px">
+      <el-table-column align="center" label="表名">
         <template slot-scope="scope">
           <span>{{ scope.row.tableName }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100px" align="center" label="引擎">
+      <el-table-column align="center" label="引擎">
         <template slot-scope="scope">
           <span>{{ scope.row.engine }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="300px" align="center" label="表注释">
+      <el-table-column align="center" label="表注释">
         <template slot-scope="scope">
           <span>{{ scope.row.tableComment }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="创建时间">
+      <el-table-column align="center" label="创建时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
         </template>
@@ -134,6 +157,10 @@ export default {
         {
           'name': 'common',
           'value': 'com.sw.common'
+        },
+        {
+          'name': 'admin',
+          'value': 'com.sw.admin'
         }
       ],
       modelNameOptions: [
@@ -164,6 +191,10 @@ export default {
         {
           'name': 'shop',
           'value': 'shop'
+        },
+        {
+          'name': 'cms',
+          'value': 'cms'
         }
       ],
       tablePrefixOptions: [
@@ -199,6 +230,13 @@ export default {
     handleFilter() {
       this.getList()
     },
+    handleReset() {
+      this.listQuery = {
+        page: 1,
+        limit: 10,
+        tableName: ''
+      }
+    },
     handleSizeChange(val) {
       this.listQuery.limit = val
       this.getList()
@@ -221,7 +259,7 @@ export default {
         if (valid) {
           generator(this.form)
             .then((response) => {
-              const content = response.data
+              const content = response
               const blob = new Blob([content])
               const fileName = 'sw-code.zip'
               if ('download' in document.createElement('a')) { // 非IE下载

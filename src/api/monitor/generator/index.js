@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-gen/generator/'
+const path = '/api-web/generator/'
 
 export function page(query) {
   return request({

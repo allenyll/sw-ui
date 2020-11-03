@@ -345,6 +345,12 @@ export const asyncRouterMap = [
         name: '搜索历史',
         component: () => import('@/views/shop/searchHistory/index'),
         meta: { title: '搜索历史', icon: 'sw-check', noCache: true, perms: 'shop:searchHistory:list' }
+      },
+      {
+        path: 'feedback',
+        name: '意见反馈',
+        component: () => import('@/views/shop/feedback/index'),
+        meta: { title: '意见反馈', icon: 'sw-feedback', noCache: true, perms: 'shop:feedback:list' }
       }
     ]
   }
