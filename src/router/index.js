@@ -351,6 +351,12 @@ export const asyncRouterMap = [
         name: '意见反馈',
         component: () => import('@/views/shop/feedback/index'),
         meta: { title: '意见反馈', icon: 'sw-feedback', noCache: true, perms: 'shop:feedback:list' }
+      },
+      {
+        path: 'footprint',
+        name: '我的足迹',
+        component: () => import('@/views/shop/footprint/index'),
+        meta: { title: '我的足迹', icon: 'sw-footprint', noCache: true, perms: 'shop:footprint:list' }
       }
     ]
   }
