@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-system/cache/'
+const path = '/api-sys/cache/'
 
 export function page(query) {
   return request({

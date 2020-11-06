@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const path = '/api-sys/job/'
+const path = '/api-job/job/'
 
 export function page(query) {
   return request({
