@@ -113,7 +113,7 @@
           <el-input v-model="form.methodName" placeholder="请输入调用方法名"/>
         </el-form-item>
         <el-form-item label="表达式" prop="corn">
-          <el-input v-model="form.corn" placeholder="请输入表达式"/>
+          <el-input v-model="form.corn" placeholder="请输入表达式(例如：0 0/5 * * * ?)"/>
         </el-form-item>
         <el-form-item label="任务状态" prop="status">
           <el-radio v-model="form.status" label="SW1301">停用</el-radio>
