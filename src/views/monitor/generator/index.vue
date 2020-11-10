@@ -195,6 +195,10 @@ export default {
         {
           'name': 'cms',
           'value': 'cms'
+        },
+        {
+          'name': 'job',
+          'value': 'job'
         }
       ],
       tablePrefixOptions: [

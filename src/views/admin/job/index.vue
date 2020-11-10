@@ -64,12 +64,12 @@
           <el-tag :type="scope.row.status | statusTypeFilter">{{ scope.row.status | statusFilters }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="调用类名">
+      <el-table-column width="300px" align="center" label="调用类名">
         <template slot-scope="scope">
           <span>{{ scope.row.className }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="200px" align="center" label="任务分组">
+      <!-- <el-table-column width="200px" align="center" label="任务分组">
         <template slot-scope="scope">
           <span>{{ scope.row.jobGroup }}</span>
         </template>
@@ -83,16 +83,20 @@
         <template slot-scope="scope">
           <span>{{ scope.row.springBean }}</span>
         </template>
-      </el-table-column>
-      <el-table-column fixed="right" align="center" label="操作" width="300px">
+      </el-table-column> -->
+      <el-table-column fixed="right" align="center" label="操作" width="400px">
         <template slot-scope="scope">
-          <el-button v-if="jobManager_btn_edit" size="small" type="success" @click="handleUpdate(scope.row)">编辑
+          <el-button v-if="jobManager_btn_edit" size="small" type="primary" @click="handleUpdate(scope.row)">编辑
           </el-button>
           <el-button v-if="jobManager_btn_del" size="small" type="danger" @click="handleDelete(scope.row)">删除
           </el-button>
-          <el-button v-show="jobManager_btn_status" size="small" type="info" @click="handleStatus(scope.row, 'start')">启用
+          <el-button v-if="jobManager_btn_status && scope.row.status === 'SW1301'" size="small" type="success" @click="handleStatus(scope.row, 'start')">启用
           </el-button>
-          <el-button v-show="jobManager_btn_status" size="small" type="warning" @click="handleStatus(scope.row, 'stop')">停用
+          <el-button v-if="jobManager_btn_status && scope.row.status === 'SW1302'" size="small" type="info" @click="handleStatus(scope.row, 'stop')">停用
+          </el-button>
+          <el-button v-show="jobManager_btn_execute" size="small" type="warning" @click="handleExecute(scope.row)">立即执行
+          </el-button>
+          <el-button v-show="jobManager_btn_log" size="small" @click="handleLog(scope.row)">日志
           </el-button>
         </template>
       </el-table-column>
@@ -138,7 +142,7 @@
 </template>
 
 <script>
-import { page, addObj, getObj, delObj, putObj, updateStatus } from '@/api/admin/job/index'
+import { page, addObj, getObj, delObj, putObj, updateStatus, executeJob } from '@/api/admin/job/index'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Job',
@@ -223,6 +227,8 @@ export default {
       jobManager_btn_del: false,
       jobManager_btn_add: false,
       jobManager_btn_status: false,
+      jobManager_btn_execute: false,
+      jobManager_btn_log: false,
       status: false,
       textMap: {
         update: '编辑',
@@ -243,6 +249,8 @@ export default {
     this.jobManager_btn_del = this.elements['sys:job:delete']
     this.jobManager_btn_add = this.elements['sys:job:add']
     this.jobManager_btn_status = this.elements['sys:job:status']
+    this.jobManager_btn_execute = this.elements['sys:job:execute']
+    this.jobManager_btn_log = this.elements['sys:job:log']
   },
   methods: {
     getList() {
@@ -306,6 +314,7 @@ export default {
               const index = this.list.indexOf(row)
               this.list.splice(index, 1)
             })
+        }).catch(() => {
         })
     },
     handleStatus(row, flag) {
@@ -351,7 +360,36 @@ export default {
               duration: 2000
             })
           })
+      }).catch(() => {
       })
+    },
+    handleExecute(row) {
+      var param = {
+        id: row.id,
+        className: row.className
+      }
+      if (row.status === 'SW1301') {
+        this.$notify({
+          title: '失败',
+          message: '请先启用任务!',
+          type: 'error',
+          duration: 2000
+        })
+        return
+      }
+      this.$confirm('确认立即执行该任务', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        executeJob(param).then(res => {
+          console.log(res)
+        })
+      }).catch(() => {
+      })
+    },
+    handleLog(row) {
+      this.$router.push({ path: '/monitor/jobLog', query: { jobId: row.id }})
     },
     create(formName) {
       const set = this.$refs

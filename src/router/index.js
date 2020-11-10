@@ -157,6 +157,12 @@ export const asyncRouterMap = [
         component: () => import('@/views/admin/job/index'),
         name: '调度任务',
         meta: { title: '调度任务', icon: 'sw-job', perms: 'sys:job:list', noCache: true }
+      },
+      {
+        path: 'jobLog',
+        component: () => import('@/views/admin/jobLog/index'),
+        name: '调度日志',
+        meta: { title: '调度日志', icon: 'sw-log', perms: 'sys:jobLog:list', noCache: true }
       }
     ]
   },

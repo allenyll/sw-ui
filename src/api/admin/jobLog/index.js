@@ -1,6 +1,13 @@
 import request from '@/utils/request'
 
-const path = '/api-job/job/'
+const path = '/api-job/jobLog/'
+
+export function list() {
+  return request({
+    url: path + 'list',
+    method: 'post'
+  })
+}
 
 export function page(query) {
   return request({
@@ -27,8 +34,11 @@ export function getObj(id) {
 
 export function delObj(id, obj) {
   return request({
-    url: path + 'deleteJob/' + id,
-    method: 'delete'
+    url: path + id,
+    method: 'delete',
+    params: {
+      eq_id: id
+    }
   })
 }
 
@@ -39,24 +49,3 @@ export function putObj(id, obj) {
     data: obj
   })
 }
-
-export function updateStatus(id, flag) {
-  const param = {
-    'id': id,
-    'flag': flag
-  }
-  return request({
-    url: path + 'updateStatus',
-    method: 'post',
-    data: param
-  })
-}
-
-export function executeJob(param) {
-  return request({
-    url: path + 'executeJob',
-    method: 'post',
-    data: param
-  })
-}
-
