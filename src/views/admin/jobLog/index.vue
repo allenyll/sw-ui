@@ -118,7 +118,7 @@ export default {
         'SW1002': '失败'
       }
       return map[val]
-    },
+    }
   },
   data() {
     return {

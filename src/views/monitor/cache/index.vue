@@ -3,7 +3,7 @@
     <div class="filter-container">
       <!--<el-input v-model="listQuery.like_key" style="width: 200px;" class="filter-item" placeholder="缓存键" @keyup.enter.native="handleFilter"/>
       <el-button class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">搜索</el-button>-->
-      <el-button class="filter-item" v-if="cacheManager_btn_deleteAll" type="danger" icon="el-icon-delete" @click="handleClear">清空</el-button>
+      <el-button v-if="cacheManager_btn_deleteAll" class="filter-item" type="danger" icon="el-icon-delete" @click="handleClear">清空</el-button>
     </div>
     <el-table v-loading.body="listLoading" :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%">
       <el-table-column align="center" label="缓存键">
@@ -18,7 +18,7 @@
       </el-table-column>
       <el-table-column align="center" label="操作" width="150px">
         <template slot-scope="scope">
-          <el-button v-if="cacheManager_btn_del" size="small" type="danger" icon="el-icon-search" @click="handleDelete(scope.row)">删除</el-button>
+          <el-button v-if="cacheManager_btn_del" size="small" type="danger" icon="el-icon-delete" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -32,13 +32,13 @@
 import { page, delObj, delAllObj } from '@/api/monitor/cache/index'
 import { mapGetters } from 'vuex'
 export default {
-  name: 'cache',
+  name: 'Cache',
   data() {
     return {
       form: {
-       
+
       },
-      
+
       list: null,
       total: null,
       listLoading: true,
@@ -52,15 +52,15 @@ export default {
       tableKey: 0
     }
   },
-  created() {
-    this.getList()
-    this.cacheManager_btn_del = this.elements['sys:cache:delete']
-    this.cacheManager_btn_deleteAll = this.elements['sys:cache:deleteAll']
-  },
   computed: {
     ...mapGetters([
       'elements'
     ])
+  },
+  created() {
+    this.getList()
+    this.cacheManager_btn_del = this.elements['sys:cache:delete']
+    this.cacheManager_btn_deleteAll = this.elements['sys:cache:deleteAll']
   },
   methods: {
     getList() {
