@@ -193,7 +193,7 @@
         border>
         <el-table-column label="操作者" width="120" align="center">
           <template slot-scope="scope">
-            {{ scope.row.updateUser }}
+            {{ scope.row.optUserName }}
           </template>
         </el-table-column>
         <el-table-column label="操作时间" width="160" align="center">
@@ -259,7 +259,7 @@
     <el-dialog
       :visible.sync="moneyDialogVisible"
       title="修改费用信息"
-      width="40%">
+      width="50%">
       <div class="table-layout">
         <el-row>
           <el-col :span="6" class="table-cell-title">商品合计</el-col>
@@ -422,6 +422,8 @@ export default {
       } else if (value === 'SW0804') {
         return '售后处理中'
       } else if (value === 'SW0805') {
+        return '拒绝售后'
+      } else if (value === 'SW0806') {
         return '处理完成'
       }
     },
@@ -556,7 +558,7 @@ export default {
     showUpdateReceiverDialog() {
       this.receiverDialogVisible = true
       this.receiverInfo = {
-        orderId: this.order.pkOrderId,
+        orderId: this.order.id,
         receiverName: this.order.receiverName,
         receiverPhone: this.order.receiverPhone,
         receiverPostCode: this.order.receiverPostCode,
@@ -587,7 +589,7 @@ export default {
     },
     showUpdateMoneyDialog() {
       this.moneyDialogVisible = true
-      this.moneyInfo.orderId = this.order.pkOrderId
+      this.moneyInfo.orderId = this.order.id
       this.moneyInfo.logisticsFee = this.order.logisticsFee
       this.moneyInfo.discountAmount = this.order.discountAmount
       this.moneyInfo.status = this.order.orderStatus

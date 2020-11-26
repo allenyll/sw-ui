@@ -10,12 +10,12 @@
       <div>
         <el-form :inline="true" :model="listQuery" size="small">
           <el-row>
-            <el-col :span="6">
+            <el-col :span="8">
               <el-form-item label="商品名称：">
                 <el-input v-model="listQuery.goodsName" class="input-width" placeholder="手工录入，模糊查询"/>
               </el-form-item>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="8">
               <el-form-item label="客户姓名：">
                 <el-input v-model="listQuery.customerName" class="input-width" placeholder="手工录入，模糊查询"/>
               </el-form-item>

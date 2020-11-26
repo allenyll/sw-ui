@@ -128,27 +128,27 @@ export default {
       packageOptions: [
         {
           'name': 'user',
-          'value': 'com.sw.user'
+          'value': 'com.sw.system.user'
         },
         {
           'name': 'order',
-          'value': 'com.sw.order'
+          'value': 'com.sw.admin.order'
         },
         {
           'name': 'market',
-          'value': 'com.sw.market'
+          'value': 'com.sw.admin.market'
         },
         {
           'name': 'file',
-          'value': 'com.sw.file'
+          'value': 'com.sw.admin.file'
         },
         {
           'name': 'market',
-          'value': 'com.sw.member'
+          'value': 'com.sw.admin.member'
         },
         {
           'name': 'product',
-          'value': 'com.sw.product'
+          'value': 'com.sw.admin.product'
         },
         {
           'name': 'job',
@@ -161,6 +161,10 @@ export default {
         {
           'name': 'admin',
           'value': 'com.sw.admin'
+        },
+        {
+          'name': 'shop',
+          'value': 'com.sw.admin.shop'
         }
       ],
       modelNameOptions: [

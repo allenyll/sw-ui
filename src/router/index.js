@@ -52,7 +52,7 @@ export const constantRouterMap = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: '首页',
-        meta: { title: '首页', icon: 'dashboard', noCache: true }
+        meta: { title: '首页', icon: 'sw-dashboard', noCache: true }
       }
     ]
   }
@@ -272,7 +272,7 @@ export const asyncRouterMap = [
     icon: 'setting',
     children: [
       {
-        path: 'coupon',
+        path: 'order',
         component: () => import('@/views/order/order/index'),
         name: '订单列表',
         meta: { title: '订单列表', icon: 'sw-order', noCache: true, perms: 'order:order:list' }
@@ -289,6 +289,19 @@ export const asyncRouterMap = [
         name: 'orderDetail',
         component: () => import('@/views/order/order/orderDetail'),
         meta: { title: '订单详情' },
+        hidden: true
+      },
+      {
+        path: 'orderAftersale',
+        component: () => import('@/views/orderAftersale/orderAftersale/index'),
+        name: '售后申请',
+        meta: { title: '售后申请', icon: 'sw-aftersale', noCache: true, perms: 'orderAftersale:orderAftersale:list' }
+      },
+      {
+        path: 'orderAftersaleDetail',
+        name: 'orderAftersaleDetail',
+        component: () => import('@/views/orderAftersale/detail/index'),
+        meta: { title: '售后申请单详情' },
         hidden: true
       }
     ]
@@ -363,6 +376,27 @@ export const asyncRouterMap = [
         name: '我的足迹',
         component: () => import('@/views/shop/footprint/index'),
         meta: { title: '我的足迹', icon: 'sw-footprint', noCache: true, perms: 'shop:footprint:list' }
+      }
+    ]
+  },
+  {
+    path: '/store',
+    component: Layout,
+    name: '店铺管理',
+    meta: { title: '店铺管理', icon: 'sw-shop', perms: 'store:store' },
+    icon: 'setting',
+    children: [
+      {
+        path: 'shop',
+        component: () => import('@/views/shop/shop/index'),
+        name: '店铺列表',
+        meta: { title: '店铺列表', icon: 'sw-shop-list', noCache: true, perms: 'store:store:list' }
+      },
+      {
+        path: 'shopAddress',
+        name: '发货地址',
+        component: () => import('@/views/shop/shopAddress/index'),
+        meta: { title: '发货地址', icon: 'sw-deliver', noCache: true, perms: 'shopAddress:shopAddress:list' }
       }
     ]
   }

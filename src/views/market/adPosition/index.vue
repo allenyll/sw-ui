@@ -10,7 +10,7 @@
       <div>
         <el-form :inline="true" :model="listQuery" size="small">
           <el-row>
-            <el-col :span="4">
+            <el-col :span="6">
               <el-form-item label="名称：">
                 <el-input v-model="listQuery.like_name" class="input-width" placeholder="手工录入，模糊查询"/>
               </el-form-item>
