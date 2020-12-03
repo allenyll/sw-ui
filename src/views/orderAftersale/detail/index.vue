@@ -44,12 +44,12 @@
       <div class="form-container-border">
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">申请单号</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.aftersaleNo }}</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.aftersaleNo }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">订单编号
           </el-col>
-          <el-col :span="18" class="form-border font-small">
+          <el-col :span="18" class="form-border font-small el-height">
             <router-link :to="{ path:'/order/orderDetail',query: {id:orderAftersale.orderId} }">
               <font color="blue">{{ orderAftersale.orderNo }}</font>
             </router-link>
@@ -57,29 +57,33 @@
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">申请状态</el-col>
-          <el-col :span="6" class="form-border font-small">{{ orderAftersale.aftersaleStatus | formatStatus }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ orderAftersale.aftersaleStatus | formatStatus }}</el-col>
           <el-col :span="6" class="form-border form-left-bg font-small">售后类型</el-col>
-          <el-col :span="6" class="form-border font-small">{{ orderAftersale.aftersaleType | formatType }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ orderAftersale.aftersaleType | formatType }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">申请人</el-col>
-          <el-col :span="6" class="form-border font-small">{{ orderAftersale.customerName }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ orderAftersale.customerName }}</el-col>
           <el-col :span="6" class="form-border form-left-bg font-small">申请时间</el-col>
-          <el-col :span="6" class="form-border font-small">{{ orderAftersale.applyTime }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ orderAftersale.applyTime }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">联系人</el-col>
-          <el-col :span="6" class="form-border font-small">{{ order.receiverName }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ order.receiverName }}</el-col>
           <el-col :span="6" class="form-border form-left-bg font-small">联系电话</el-col>
-          <el-col :span="6" class="form-border font-small">{{ order.receiverPhone }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ order.receiverPhone }}</el-col>
+        </el-row>
+        <el-row v-show="orderAftersale.cancelTime">
+          <el-col :span="6" class="form-border form-left-bg font-small">取消时间</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.cancelTime }}</el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-small">退货原因</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.aftersaleReason }}</el-col>
+          <el-col :span="6" class="form-border form-left-bg font-small height-75">退货原因</el-col>
+          <el-col :span="18" class="form-border font-small"><el-input v-model="orderAftersale.aftersaleReason" type="textarea" disabled resize="none" /></el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-small">问题描述</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.refundRemark }}</el-col>
+          <el-col :span="6" class="form-border form-left-bg font-small height-75">问题描述</el-col>
+          <el-col :span="18" class="form-border font-small"><el-input v-model="orderAftersale.refundRemark" type="textarea" disabled resize="none" /></el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small" style="height:100px;line-height:80px">凭证图片
@@ -92,37 +96,38 @@
       <div class="form-container-border">
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">申请单金额</el-col>
-          <el-col :span="18" class="form-border font-small">￥{{ totalAmount }}</el-col>
+          <el-col v-show="orderAftersale.aftersaleType !== 'SW2902'" :span="18" class="form-border font-small el-height">￥{{ totalAmount }}</el-col>
+          <el-col v-show="orderAftersale.aftersaleType === 'SW2902'" :span="18" class="form-border font-small el-height">￥0</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small" style="height:52px;line-height:32px">确认退款金额
           </el-col>
-          <el-col :span="18" class="form-border font-small" style="height:52px">
+          <el-col :span="18" class="form-border font-small el-height" style="height:52px">
             ￥
             <el-input
               v-model="updateStatusParam.refundAmount"
-              :disabled="orderAftersale.aftersaleStatus !== 'SW0802'"
+              :disabled="orderAftersale.aftersaleType === 'SW2902' || orderAftersale.aftersaleStatus !== 'SW0802'"
               size="small"
               style="width:200px;margin-left: 10px"/>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">退款方式</el-col>
-          <el-col :span="6" class="form-border font-small">{{ orderAftersale.refundType | formatRefundType }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ orderAftersale.refundType | formatRefundType }}</el-col>
           <el-col :span="6" class="form-border form-left-bg font-small">退还积分</el-col>
-          <el-col :span="6" class="form-border font-small">{{ orderAftersale.refundPoint }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ orderAftersale.refundPoint }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">使用的积分可抵扣金额</el-col>
-          <el-col :span="6" class="form-border font-small">{{ orderAftersale.usePointAmount }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ orderAftersale.usePointAmount }}</el-col>
           <el-col :span="6" class="form-border form-left-bg font-small">获得的积分可抵扣金额</el-col>
-          <el-col :span="6" class="form-border font-small">{{ orderAftersale.getPointAmount }}</el-col>
+          <el-col :span="6" class="form-border font-small el-height">{{ orderAftersale.getPointAmount }}</el-col>
         </el-row>
         <div v-show="orderAftersale.aftersaleType !== 'SW2901'">
           <el-row>
             <el-col :span="6" class="form-border form-left-bg font-small" style="height:52px;line-height:32px">选择收货点
             </el-col>
-            <el-col :span="18" class="form-border font-small" style="height:52px">
+            <el-col :span="18" class="form-border font-small el-height" style="height:52px">
               <el-select
                 v-model="updateStatusParam.companyAddressId"
                 disabled
@@ -138,64 +143,72 @@
           </el-row>
           <el-row>
             <el-col :span="6" class="form-border form-left-bg font-small">收货人姓名</el-col>
-            <el-col :span="18" class="form-border font-small">{{ currentAddress.receiverName }}</el-col>
+            <el-col :span="18" class="form-border font-small el-height">{{ currentAddress.receiverName }}</el-col>
           </el-row>
           <el-row>
             <el-col :span="6" class="form-border form-left-bg font-small">所在区域</el-col>
-            <el-col :span="18" class="form-border font-small">{{ currentAddress.receiverProvince }}{{ currentAddress.receiverCity }}{{ currentAddress.receiverRegion }}</el-col>
+            <el-col :span="18" class="form-border font-small el-height">{{ currentAddress.receiverProvince }}{{ currentAddress.receiverCity }}{{ currentAddress.receiverRegion }}</el-col>
           </el-row>
           <el-row>
             <el-col :span="6" class="form-border form-left-bg font-small">详细地址</el-col>
-            <el-col :span="18" class="form-border font-small">{{ currentAddress.receiverDetailAddress }}</el-col>
+            <el-col :span="18" class="form-border font-small el-height">{{ currentAddress.receiverDetailAddress }}</el-col>
           </el-row>
           <el-row>
             <el-col :span="6" class="form-border form-left-bg font-small">联系电话</el-col>
-            <el-col :span="18" class="form-border font-small">{{ currentAddress.receiverPhone }}</el-col>
+            <el-col :span="18" class="form-border font-small el-height">{{ currentAddress.receiverPhone }}</el-col>
           </el-row>
         </div>
       </div>
       <div v-show="orderAftersale.aftersaleStatus !== 'SW0802'" class="form-container-border">
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">处理人员</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.dealUserName }}</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.dealUserName }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">处理时间</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.dealTime }}</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.dealTime }}</el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-small">处理备注</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.dealNote }}</el-col>
+          <el-col :span="6" class="form-border form-left-bg font-small height-75">处理备注</el-col>
+          <el-col :span="18" class="form-border font-small"><el-input v-model="orderAftersale.dealNote" type="textarea" disabled resize="none" /></el-col>
         </el-row>
       </div>
       <div v-show="orderAftersale.aftersaleStatus === 'SW0806' && orderAftersale.aftersaleType != 'SW2901'" class="form-container-border">
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small">收货人员</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.receiverName }}</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.receiverName }}</el-col>
         </el-row>
         <el-row>
           <el-col :span="6" class="form-border form-left-bg font-small" >收货时间</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.receiverTime }}</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.receiverTime }}</el-col>
         </el-row>
         <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-small">收货备注</el-col>
-          <el-col :span="18" class="form-border font-small">{{ orderAftersale.receiverNote }}</el-col>
+          <el-col :span="6" class="form-border form-left-bg font-small height-75">收货备注</el-col>
+          <el-col :span="18" class="form-border font-small"><el-input v-model="orderAftersale.receiverNote" type="textarea" disabled resize="none" /></el-col>
         </el-row>
       </div>
       <div v-show="orderAftersale.aftersaleStatus === 'SW0802'" class="form-container-border">
         <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-small" style="height:52px;line-height:32px">处理备注</el-col>
-          <el-col :span="18" class="form-border font-small">
-            <el-input v-model="updateStatusParam.dealNote" size="small" style="width:200px;margin-left: 10px"/>
-          </el-col>
+          <el-col :span="6" class="form-border form-left-bg font-small height-75">处理备注</el-col>
+          <el-col :span="18" class="form-border font-small"><el-input v-model="updateStatusParam.dealNote" type="textarea" resize="none" /></el-col>
         </el-row>
       </div>
       <div v-show="orderAftersale.aftersaleStatus === 'SW0804'" class="form-container-border">
         <el-row>
-          <el-col :span="6" class="form-border form-left-bg font-small" style="height:52px;line-height:32px">收货备注</el-col>
-          <el-col :span="18" class="form-border font-small">
-            <el-input v-model="updateStatusParam.receiverNote" size="small" style="width:200px;margin-left: 10px"/>
-          </el-col>
+          <el-col :span="6" class="form-border form-left-bg font-small" >快递公司</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.deliveryCompany }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6" class="form-border form-left-bg font-small" >快递单号</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.deliveryNo }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6" class="form-border form-left-bg font-small" >发货时间</el-col>
+          <el-col :span="18" class="form-border font-small el-height">{{ orderAftersale.deliveryTime }}</el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="6" class="form-border form-left-bg font-small height-75">收货备注</el-col>
+          <el-col :span="18" class="form-border font-small"><el-input v-model="updateStatusParam.receiverNote" type="textarea" resize="none" /></el-col>
         </el-row>
       </div>
       <div v-show="orderAftersale.aftersaleStatus === 'SW0802'" style="margin-top:15px;text-align: center">
@@ -402,13 +415,21 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        updateAftersaleStatus(param).then(response => {
-          this.$message({
-            type: 'success',
-            message: '操作成功!',
-            duration: 1000
-          })
-          this.$router.back()
+        updateAftersaleStatus(param).then(res => {
+          if (res.success) {
+            this.$message({
+              type: 'success',
+              message: '操作成功!',
+              duration: 1000
+            })
+            this.$router.back()
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message,
+              duration: 1000
+            })
+          }
         })
       })
     }
@@ -443,5 +464,15 @@ export default {
   .form-left-bg {
     background: #F2F6FC;
   }
+
+  .el-height {
+    height: 39px;
+  }
+
+  .height-75 {
+    height: 75px;
+    line-height: 55px;
+  }
+
 </style>
 
