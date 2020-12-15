@@ -71,7 +71,7 @@
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" :total="total" layout="total, sizes, prev, pager, next, jumper" @size-change="handleSizeChange" @current-change="handleCurrentChange"/>
     </div>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeDialog">>
+    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeDialog">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px">
         <el-form-item label="消息名称" prop="messageName">
           <el-input v-model="form.messageName" placeholder="请输入消息名称"/>
