@@ -367,80 +367,134 @@ export default {
         this.resetSkuList()
       })
     },
+    /**
+   * 笛卡尔积获取SKU
+   */
+    calcDescartes: function(array) {
+      console.log(array)
+      if (array.length < 2) return array[0] || []
+      return [].reduce.call(array, function(col, set) {
+        var res = []
+        col.forEach(function(c) {
+          set.forEach(function(s) {
+            var t = [].concat(Array.isArray(c) ? c : [c])
+            t.push(s)
+            res.push(t)
+          })
+        })
+        return res
+      })
+    },
     resetSkuList() {
       this.value.skuStockList = []
       const skuList = this.value.skuStockList
       const specsList = this.specsList
-      // 只有一个规格
-      if (specsList.length === 1) {
-        const values = specsList[0].values
-        for (let i = 0; i < values.length; i++) {
-          skuList.push({
-            value0: this.specOptionNameMap[values[i]],
-            id0: values[i],
-            specValue: '[' + values[i] + ',' + this.specOptionNameMap[values[i]] + ']'
-          })
-        }
-      } else if (specsList.length === 2) {
-        const values0 = specsList[0].values
-        const values1 = specsList[1].values
-        for (let i = 0; i < values0.length; i++) {
-          if (values1.length === 0) {
-            skuList.push({
-              value0: this.specOptionNameMap[values0[i]],
-              id0: values0[i],
-              specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + ']'
-            })
-            continue
-          }
-          for (let j = 0; j < values1.length; j++) {
-            skuList.push({
-              value0: this.specOptionNameMap[values0[i]],
-              id0: values0[i],
-              value1: this.specOptionNameMap[values1[j]],
-              id1: values1[j],
-              specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + '];[' + values1[j] + ',' + this.specOptionNameMap[values1[j]] + ']'
-            })
-          }
-        }
-      } else if (specsList.length === 3) {
-        const values0 = specsList[0].values
-        const values1 = specsList[1].values
-        const values2 = specsList[2].values
-        for (let i = 0; i < values0.length; i++) {
-          if (values1.length === 0) {
-            skuList.push({
-              value0: this.specOptionNameMap[values0[i]],
-              id0: values0[i],
-              specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + ']'
-            })
-            continue
-          }
-          for (let j = 0; j < values1.length; j++) {
-            if (values2.length === 0) {
-              skuList.push({
-                value0: this.specOptionNameMap[values0[i]],
-                id0: values0[i],
-                value1: this.specOptionNameMap[values1[j]],
-                id1: values1[j],
-                specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + '];[' + values1[j] + ',' + this.specOptionNameMap[values1[j]] + ']'
-              })
-              continue
-            }
-            for (let k = 0; k < values2.length; k++) {
-              skuList.push({
-                value0: this.specOptionNameMap[values0[i]],
-                id0: values0[i],
-                value1: this.specOptionNameMap[values1[j]],
-                id1: values1[j],
-                value2: this.specOptionNameMap[values2[k]],
-                id2: values2[k],
-                specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + '];[' + values1[j] + ',' + this.specOptionNameMap[values1[j]] + '];[' + values2[k] + ',' + this.specOptionNameMap[values2[k]] + ']'
-              })
-            }
-          }
-        }
+      var selectSpecs = []
+      for (const index in specsList) {
+        selectSpecs.push(specsList[index].values)
       }
+      const specsOption = this.calcDescartes(selectSpecs)
+      for (const index in specsOption) {
+        const specArr = specsOption[index]
+        let specValue = ''
+        const obj = {}
+        if (!(specArr instanceof Array)) {
+          const _id = specArr
+          const _name = this.specOptionNameMap[specArr]
+          if (!specValue) {
+            specValue = '[' + _id + ',' + _name + ']'
+          } else {
+            specValue += ';' + '[' + _id + ',' + _name + ']'
+          }
+          obj['id' + 0] = _id
+          obj['value' + 0] = _name
+          obj['specValue'] = specValue
+        } else {
+          for (const key in specArr) {
+            const _id = specArr[key]
+            const _name = this.specOptionNameMap[specArr[key]]
+            if (!specValue) {
+              specValue = '[' + _id + ',' + _name + ']'
+            } else {
+              specValue += ';' + '[' + _id + ',' + _name + ']'
+            }
+            obj['id' + key] = _id
+            obj['value' + key] = _name
+            obj['specValue'] = specValue
+          }
+        }
+        skuList.push(obj)
+      }
+      // 只有一个规格
+      // if (specsList.length === 1) {
+      //   const values = specsList[0].values
+      //   for (let i = 0; i < values.length; i++) {
+      //     skuList.push({
+      //       value0: this.specOptionNameMap[values[i]],
+      //       id0: values[i],
+      //       specValue: '[' + values[i] + ',' + this.specOptionNameMap[values[i]] + ']'
+      //     })
+      //   }
+      // } else if (specsList.length === 2) {
+      //   const values0 = specsList[0].values
+      //   const values1 = specsList[1].values
+      //   for (let i = 0; i < values0.length; i++) {
+      //     if (values1.length === 0) {
+      //       skuList.push({
+      //         value0: this.specOptionNameMap[values0[i]],
+      //         id0: values0[i],
+      //         specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + ']'
+      //       })
+      //       continue
+      //     }
+      //     for (let j = 0; j < values1.length; j++) {
+      //       skuList.push({
+      //         value0: this.specOptionNameMap[values0[i]],
+      //         id0: values0[i],
+      //         value1: this.specOptionNameMap[values1[j]],
+      //         id1: values1[j],
+      //         specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + '];[' + values1[j] + ',' + this.specOptionNameMap[values1[j]] + ']'
+      //       })
+      //     }
+      //   }
+      // } else if (specsList.length === 3) {
+      //   const values0 = specsList[0].values
+      //   const values1 = specsList[1].values
+      //   const values2 = specsList[2].values
+      //   for (let i = 0; i < values0.length; i++) {
+      //     if (values1.length === 0) {
+      //       skuList.push({
+      //         value0: this.specOptionNameMap[values0[i]],
+      //         id0: values0[i],
+      //         specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + ']'
+      //       })
+      //       continue
+      //     }
+      //     for (let j = 0; j < values1.length; j++) {
+      //       if (values2.length === 0) {
+      //         skuList.push({
+      //           value0: this.specOptionNameMap[values0[i]],
+      //           id0: values0[i],
+      //           value1: this.specOptionNameMap[values1[j]],
+      //           id1: values1[j],
+      //           specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + '];[' + values1[j] + ',' + this.specOptionNameMap[values1[j]] + ']'
+      //         })
+      //         continue
+      //       }
+      //       for (let k = 0; k < values2.length; k++) {
+      //         skuList.push({
+      //           value0: this.specOptionNameMap[values0[i]],
+      //           id0: values0[i],
+      //           value1: this.specOptionNameMap[values1[j]],
+      //           id1: values1[j],
+      //           value2: this.specOptionNameMap[values2[k]],
+      //           id2: values2[k],
+      //           specValue: '[' + values0[i] + ',' + this.specOptionNameMap[values0[i]] + '];[' + values1[j] + ',' + this.specOptionNameMap[values1[j]] + '];[' + values2[k] + ',' + this.specOptionNameMap[values2[k]] + ']'
+      //         })
+      //       }
+      //     }
+      //   }
+      // }
       this.value.skuStockList = skuList
       this.value.skuStockMapList = skuList
     },
