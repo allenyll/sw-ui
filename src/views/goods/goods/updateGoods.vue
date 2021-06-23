@@ -2,7 +2,7 @@
   <goods-detail :is-edit="true"/>
 </template>
 <script>
-import GoodsDetail from '../components/GoodsDetail'
+import GoodsDetail from './components/goodsDetail'
 
 export default {
   name: 'UpdateGoods',
